@@ -29,16 +29,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Pre-load contact form for modal functionality on positions and internship pages
-    if (window.location.pathname.includes('openpositions.html') || 
-        window.location.pathname.includes('internship.html')) {
+    const currentPath = window.location.pathname;
+    const isPositionsPage = currentPath.includes('openpositions') || currentPath.endsWith('openpositions.html');
+    const isInternshipPage = currentPath.includes('internship') || currentPath.endsWith('internship.html');
+    
+    if (isPositionsPage || isInternshipPage) {
+        console.log('Pre-loading contact form for modal functionality');
         // Create a hidden container for pre-loading
-        if (!document.getElementById('preload-form-container')) {
-            const preloadContainer = document.createElement('div');
-            preloadContainer.id = 'preload-form-container';
-            preloadContainer.style.display = 'none';
-            document.body.appendChild(preloadContainer);
-            loadComponent('contact-form', 'preload-form-container');
-        }
+        setTimeout(() => {
+            if (!document.getElementById('preload-form-container')) {
+                const preloadContainer = document.createElement('div');
+                preloadContainer.id = 'preload-form-container';
+                preloadContainer.style.display = 'none';
+                document.body.appendChild(preloadContainer);
+                loadComponent('contact-form', 'preload-form-container');
+            }
+        }, 500);
     }
 });
 

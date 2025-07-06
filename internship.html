@@ -204,6 +204,71 @@
     <div id="footer-container"></div>
 
     <!-- Scripts -->
+    <script>
+        // Define functions immediately for onclick handlers
+        let currentTrack = '';
+        
+        function showApplicationForm(trackName) {
+            console.log('showApplicationForm called with:', trackName);
+            currentTrack = trackName;
+            const positionTitle = document.getElementById('position-title');
+            const applicationForm = document.getElementById('application-form');
+            
+            if (positionTitle) {
+                positionTitle.textContent = `Track: ${trackName}`;
+            }
+            
+            if (applicationForm) {
+                applicationForm.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                // Load contact form immediately
+                setTimeout(() => {
+                    if (typeof loadComponent === 'function') {
+                        loadComponent('contact-form', 'contact-form-container').then(() => {
+                            setTimeout(() => {
+                                const subjectField = document.getElementById('subject');
+                                if (subjectField) {
+                                    subjectField.value = `Application for ${trackName}`;
+                                }
+                            }, 100);
+                        });
+                    }
+                }, 100);
+            }
+        }
+        
+        function hideApplicationForm() {
+            const applicationForm = document.getElementById('application-form');
+            if (applicationForm) {
+                applicationForm.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            currentTrack = '';
+        }
+        
+        // Add event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Close form when clicking outside
+            document.addEventListener('click', function(event) {
+                const applicationForm = document.getElementById('application-form');
+                const formContainer = applicationForm?.querySelector('.container');
+                
+                if (applicationForm && 
+                    applicationForm.style.display === 'block' && 
+                    !formContainer?.contains(event.target)) {
+                    hideApplicationForm();
+                }
+            });
+
+            // Escape key to close form
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    hideApplicationForm();
+                }
+            });
+        });
+    </script>
     <script src="components/component-loader.js"></script>
     <script src="script.js"></script>
     <script src="scripts/internship.js"></script>
