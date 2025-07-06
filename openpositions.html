@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Positions - Rigid Logic</title>
+    <link rel="icon" type="image/svg+xml" href="logo.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/positions.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- EmailJS CDN -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <!-- Hero Section -->
+    <section class="positions-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Join Our Team</h1>
+                <p>Discover exciting career opportunities at Rigid Logic</p>
+                <p>We're looking for talented individuals to join our innovative team and help shape the future of technology.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Open Positions Section -->
+    <section class="open-positions">
+        <div class="container">
+            <h2>OPEN POSITIONS</h2>
+            
+            <!-- Unity Developer Position -->
+            <div class="position-card" id="unity-developer">
+                <div class="position-header">
+                    <h3>Unity Developer</h3>
+                    <span class="position-type">Full-time</span>
+                </div>
+                <div class="position-content">
+                    <div class="position-description">
+                        <h4>About the Role</h4>
+                        <p>We're seeking a talented Unity Developer to join our game development team. You'll work on cutting-edge projects, creating immersive gaming experiences and interactive applications.</p>
+                        
+                        <h4>Key Responsibilities</h4>
+                        <ul>
+                            <li>Develop high-quality games and interactive applications using Unity</li>
+                            <li>Collaborate with designers, artists, and other developers</li>
+                            <li>Optimize performance for various platforms (PC, Mobile, VR/AR)</li>
+                            <li>Implement gameplay mechanics and user interfaces</li>
+                            <li>Debug and troubleshoot technical issues</li>
+                        </ul>
+                        
+                        <h4>Requirements</h4>
+                        <ul>
+                            <li>3+ years of experience with Unity 3D</li>
+                            <li>Strong knowledge of C# programming</li>
+                            <li>Experience with game physics, animation systems, and shaders</li>
+                            <li>Understanding of mobile and VR/AR development</li>
+                            <li>Excellent problem-solving skills</li>
+                        </ul>
+                    </div>
+                    <div class="apply-section">
+                        <button class="apply-btn" onclick="showApplicationForm('Unity Developer')">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2D-3D Artist Position -->
+            <div class="position-card" id="2d-3d-artist">
+                <div class="position-header">
+                    <h3>2D-3D Artist</h3>
+                    <span class="position-type">Full-time</span>
+                </div>
+                <div class="position-content">
+                    <div class="position-description">
+                        <h4>About the Role</h4>
+                        <p>Join our creative team as a 2D-3D Artist and bring our digital worlds to life. You'll create stunning visual assets, characters, and environments for our games and applications.</p>
+                        
+                        <h4>Key Responsibilities</h4>
+                        <ul>
+                            <li>Create high-quality 2D and 3D art assets</li>
+                            <li>Design characters, environments, and user interface elements</li>
+                            <li>Work closely with the development team to ensure artistic vision</li>
+                            <li>Optimize assets for different platforms and performance requirements</li>
+                            <li>Maintain consistent art style across projects</li>
+                        </ul>
+                        
+                        <h4>Requirements</h4>
+                        <ul>
+                            <li>Portfolio demonstrating 2D and 3D art skills</li>
+                            <li>Proficiency in industry-standard software (Maya, Blender, Photoshop, etc.)</li>
+                            <li>Understanding of game art pipelines and optimization</li>
+                            <li>Knowledge of texturing, lighting, and rendering techniques</li>
+                            <li>Strong artistic eye and attention to detail</li>
+                        </ul>
+                    </div>
+                    <div class="apply-section">
+                        <button class="apply-btn" onclick="showApplicationForm('2D-3D Artist')">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sound Artist Position -->
+            <div class="position-card" id="sound-artist">
+                <div class="position-header">
+                    <h3>Sound Artist</h3>
+                    <span class="position-type">Full-time</span>
+                </div>
+                <div class="position-content">
+                    <div class="position-description">
+                        <h4>About the Role</h4>
+                        <p>We're looking for a creative Sound Artist to enhance our projects with immersive audio experiences. You'll design and implement sound effects, music, and audio systems.</p>
+                        
+                        <h4>Key Responsibilities</h4>
+                        <ul>
+                            <li>Create and implement sound effects and audio assets</li>
+                            <li>Design immersive audio landscapes for games and applications</li>
+                            <li>Collaborate with developers to integrate audio systems</li>
+                            <li>Optimize audio performance for various platforms</li>
+                            <li>Maintain audio quality standards and consistency</li>
+                        </ul>
+                        
+                        <h4>Requirements</h4>
+                        <ul>
+                            <li>Experience with audio production and sound design</li>
+                            <li>Proficiency in audio software (Pro Tools, Audacity, Wwise, FMOD)</li>
+                            <li>Understanding of game audio implementation</li>
+                            <li>Knowledge of audio optimization and compression techniques</li>
+                            <li>Creative mindset and excellent ear for sound</li>
+                        </ul>
+                    </div>
+                    <div class="apply-section">
+                        <button class="apply-btn" onclick="showApplicationForm('Sound Artist')">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Form Section -->
+    <section id="application-form" class="application-form-section" style="display: none;">
+        <div class="container">
+            <div class="form-header">
+                <h2>Apply for Position</h2>
+                <p id="position-title">Position: </p>
+                <button class="close-form-btn" onclick="hideApplicationForm()">×</button>
+            </div>
+            
+            <div id="contact-form-container"></div>
+        </div>
+    </section>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="components/component-loader.js"></script>
+    <script src="script.js"></script>
+    <script src="scripts/positions.js"></script>
+</body>
+</html> 
