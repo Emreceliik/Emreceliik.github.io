@@ -18,6 +18,44 @@ body {
     padding: 0 20px;
 }
 
+/* Breadcrumb Navigation */
+.breadcrumb {
+    padding: 0.5rem 0;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    margin-top: 70px; /* Account for fixed navbar */
+}
+
+.breadcrumb ol {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.breadcrumb li {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb li:not(:last-child)::after {
+    content: '/';
+    margin: 0 0.5rem;
+    color: #6c757d;
+}
+
+.breadcrumb a {
+    color: #0066cc;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
 /* Navigation */
 .navbar {
     background: #34495e;

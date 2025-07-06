@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://emreceliik.github.io/sitemap.xml
+
+# Crawl-delay for bots
+Crawl-delay: 1
+
+# Disallow directories that shouldn't be indexed
+Disallow: /.git/
+Disallow: /components/
+Disallow: /scripts/
+Disallow: /styles/
+
+# Allow important pages
+Allow: /
+Allow: /openpositions.html
+Allow: /internship.html
+Allow: /logo.jpg
+Allow: /logo.svg 
