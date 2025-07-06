@@ -262,7 +262,8 @@ class Navigation {
 
         window.addEventListener('scroll', () => {
             let current = '';
-            const navHeight = document.querySelector('.navbar').offsetHeight;
+            const navbar = document.querySelector('.navbar');
+            const navHeight = navbar ? navbar.offsetHeight : 70; // Default fallback
 
             sections.forEach(section => {
                 const sectionTop = section.offsetTop - navHeight - 100;
@@ -358,6 +359,14 @@ class MobileNavigation {
     createMobileMenu() {
         // Add mobile menu toggle button
         const navbar = document.querySelector('.navbar .nav-container');
+        
+        // Check if navbar exists, if not wait for it to load
+        if (!navbar) {
+            console.log('Navbar not found, waiting for components to load...');
+            setTimeout(() => this.createMobileMenu(), 500);
+            return;
+        }
+
         const mobileToggle = document.createElement('button');
         mobileToggle.className = 'mobile-toggle';
         mobileToggle.innerHTML = '☰';
@@ -470,20 +479,23 @@ class PerformanceOptimizer {
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize all components
-    new ContactForm();
-    new Navigation();
-    new ScrollAnimations();
-    new MobileNavigation();
-    new PerformanceOptimizer();
+    // Wait a bit for modular components to load
+    setTimeout(() => {
+        // Initialize all components
+        new ContactForm();
+        new Navigation();
+        new ScrollAnimations();
+        new MobileNavigation();
+        new PerformanceOptimizer();
 
-    // Add loading animation
-    document.body.classList.add('loaded');
+        // Add loading animation
+        document.body.classList.add('loaded');
 
-    // Console message for developers
-    console.log('%cRigid Logic Website', 'color: #7f8c8d; font-size: 24px; font-weight: bold;');
-    console.log('%cBuilt with modern web technologies', 'color: #5d6d7e; font-size: 14px;');
-    console.log('%cFor inquiries: info@rigidlgc.com', 'color: #5d6d7e; font-size: 14px;');
+        // Console message for developers
+        console.log('%cRigid Logic Website', 'color: #7f8c8d; font-size: 24px; font-weight: bold;');
+        console.log('%cBuilt with modern web technologies', 'color: #5d6d7e; font-size: 14px;');
+        console.log('%cFor inquiries: info@rigidlgc.com', 'color: #5d6d7e; font-size: 14px;');
+    }, 1000); // Wait 1 second for components to load
 });
 
 // Handle window resize events
