@@ -27,6 +27,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (contactFormContainer) {
         loadComponent('contact-form', 'contact-form-container');
     }
+    
+    // Pre-load contact form for modal functionality on positions and internship pages
+    if (window.location.pathname.includes('openpositions.html') || 
+        window.location.pathname.includes('internship.html')) {
+        // Create a hidden container for pre-loading
+        if (!document.getElementById('preload-form-container')) {
+            const preloadContainer = document.createElement('div');
+            preloadContainer.id = 'preload-form-container';
+            preloadContainer.style.display = 'none';
+            document.body.appendChild(preloadContainer);
+            loadComponent('contact-form', 'preload-form-container');
+        }
+    }
 });
 
 // Function to load components dynamically

@@ -1,15 +1,15 @@
-// Positions page JavaScript functionality
+// Internship page JavaScript functionality
 
-let currentPosition = '';
+let currentTrack = '';
 
-// Show application form for specific position
-function showApplicationForm(positionName) {
-    currentPosition = positionName;
+// Show application form for specific internship track
+function showApplicationForm(trackName) {
+    currentTrack = trackName;
     const positionTitle = document.getElementById('position-title');
     const applicationForm = document.getElementById('application-form');
     
     if (positionTitle) {
-        positionTitle.textContent = `Position: ${positionName}`;
+        positionTitle.textContent = `Track: ${trackName}`;
     }
     
     if (applicationForm) {
@@ -27,7 +27,7 @@ function showApplicationForm(positionName) {
                 setTimeout(() => {
                     const subjectField = document.getElementById('subject');
                     if (subjectField) {
-                        subjectField.value = `Application for ${positionName} Position`;
+                        subjectField.value = `Application for ${trackName}`;
                     }
                 }, 50);
             } else {
@@ -37,7 +37,7 @@ function showApplicationForm(positionName) {
                         setTimeout(() => {
                             const subjectField = document.getElementById('subject');
                             if (subjectField) {
-                                subjectField.value = `Application for ${positionName} Position`;
+                                subjectField.value = `Application for ${trackName}`;
                             }
                         }, 100);
                     }).catch(error => {
@@ -50,7 +50,7 @@ function showApplicationForm(positionName) {
             setTimeout(() => {
                 const subjectField = document.getElementById('subject');
                 if (subjectField) {
-                    subjectField.value = `Application for ${positionName} Position`;
+                    subjectField.value = `Application for ${trackName}`;
                 }
             }, 50);
         }
@@ -66,7 +66,7 @@ function hideApplicationForm() {
         document.body.style.overflow = 'auto'; // Restore scrolling
     }
     
-    currentPosition = '';
+    currentTrack = '';
 }
 
 // Close form when clicking outside
@@ -88,7 +88,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Smooth scrolling for position anchors
+// Smooth scrolling for track anchors
 document.addEventListener('DOMContentLoaded', function() {
     // Handle hash links in URL
     if (window.location.hash) {

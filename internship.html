@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Program - Rigid Logic</title>
+    <link rel="icon" type="image/svg+xml" href="logo.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/internship.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- EmailJS CDN -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <!-- Hero Section -->
+    <section class="internship-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Internship Program</h1>
+                <p>Start Your Career Journey with Rigid Logic</p>
+                <p>Join our comprehensive internship program and gain hands-on experience in cutting-edge technology development while working alongside industry experts.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Program Overview Section -->
+    <section class="program-overview">
+        <div class="container">
+            <h2>PROGRAM OVERVIEW</h2>
+            <div class="overview-content">
+                <div class="overview-text">
+                    <p>Our internship program is designed to provide university students and recent graduates with real-world experience in game development, VR/AR technologies, and automation systems. You'll work on actual projects, contribute to our development teams, and receive mentorship from experienced professionals.</p>
+                </div>
+                <div class="program-features">
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <h3>🎯 Real Projects</h3>
+                            <p>Work on actual company projects, not just training exercises</p>
+                        </div>
+                        <div class="feature-item">
+                            <h3>👥 Mentorship</h3>
+                            <p>One-on-one guidance from senior developers and industry experts</p>
+                        </div>
+                        <div class="feature-item">
+                            <h3>🚀 Learning Path</h3>
+                            <p>Structured learning journey tailored to your interests and career goals</p>
+                        </div>
+                        <div class="feature-item">
+                            <h3>💼 Career Growth</h3>
+                            <p>Potential for full-time employment upon successful completion</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Internship Tracks Section -->
+    <section class="internship-tracks">
+        <div class="container">
+            <h2>INTERNSHIP TRACKS</h2>
+            
+            <!-- Game Development Track -->
+            <div class="track-card" id="game-development-track">
+                <div class="track-header">
+                    <h3>Game Development Internship</h3>
+                    <span class="track-duration">3-6 Months</span>
+                </div>
+                <div class="track-content">
+                    <div class="track-description">
+                        <h4>What You'll Learn</h4>
+                        <ul>
+                            <li>Unity 3D development and C# programming</li>
+                            <li>Game design principles and mechanics</li>
+                            <li>3D graphics, animations, and physics systems</li>
+                            <li>Mobile game optimization and publishing</li>
+                            <li>Version control with Git and collaborative development</li>
+                        </ul>
+                        
+                        <h4>Requirements</h4>
+                        <ul>
+                            <li>Currently pursuing or recently completed Computer Science, Game Development, or related degree</li>
+                            <li>Basic understanding of programming concepts</li>
+                            <li>Passion for game development and interactive media</li>
+                            <li>Strong problem-solving skills and attention to detail</li>
+                        </ul>
+                    </div>
+                    <div class="apply-section">
+                        <button class="apply-btn" onclick="showApplicationForm('Game Development Internship')">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VR/AR Development Track -->
+            <div class="track-card" id="vr-ar-track">
+                <div class="track-header">
+                    <h3>VR/AR Development Internship</h3>
+                    <span class="track-duration">3-6 Months</span>
+                </div>
+                <div class="track-content">
+                    <div class="track-description">
+                        <h4>What You'll Learn</h4>
+                        <ul>
+                            <li>Virtual and Augmented Reality development platforms</li>
+                            <li>Immersive user interface design</li>
+                            <li>3D spatial interactions and hand tracking</li>
+                            <li>Performance optimization for VR/AR devices</li>
+                            <li>Cross-platform VR/AR deployment</li>
+                        </ul>
+                        
+                        <h4>Requirements</h4>
+                        <ul>
+                            <li>Background in Computer Science, Software Engineering, or related field</li>
+                            <li>Interest in emerging technologies and immersive experiences</li>
+                            <li>Basic knowledge of 3D mathematics and graphics programming</li>
+                            <li>Creative mindset and innovative thinking</li>
+                        </ul>
+                    </div>
+                    <div class="apply-section">
+                        <button class="apply-btn" onclick="showApplicationForm('VR/AR Development Internship')">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UI/UX Design Track -->
+            <div class="track-card" id="ui-ux-track">
+                <div class="track-header">
+                    <h3>UI/UX Design Internship</h3>
+                    <span class="track-duration">3-4 Months</span>
+                </div>
+                <div class="track-content">
+                    <div class="track-description">
+                        <h4>What You'll Learn</h4>
+                        <ul>
+                            <li>User experience design for games and applications</li>
+                            <li>Interface design principles and best practices</li>
+                            <li>Prototyping tools and design software</li>
+                            <li>User research and usability testing</li>
+                            <li>Design systems and component libraries</li>
+                        </ul>
+                        
+                        <h4>Requirements</h4>
+                        <ul>
+                            <li>Studying Graphic Design, Interaction Design, or related field</li>
+                            <li>Portfolio demonstrating design skills and creativity</li>
+                            <li>Familiarity with design tools (Figma, Adobe Creative Suite, etc.)</li>
+                            <li>Understanding of user-centered design principles</li>
+                        </ul>
+                    </div>
+                    <div class="apply-section">
+                        <button class="apply-btn" onclick="showApplicationForm('UI/UX Design Internship')">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Process Section -->
+    <section class="application-process">
+        <div class="container">
+            <h2>APPLICATION PROCESS</h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Apply Online</h3>
+                    <p>Submit your application through our online form with your resume and portfolio</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Initial Review</h3>
+                    <p>Our team will review your application and contact you within 1-2 weeks</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Interview</h3>
+                    <p>Technical interview and portfolio review with our development team</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Welcome Aboard</h3>
+                    <p>Start your internship journey and begin contributing to real projects</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Application Form Section -->
+    <section id="application-form" class="application-form-section" style="display: none;">
+        <div class="container">
+            <div class="form-header">
+                <h2>Apply for Internship</h2>
+                <p id="position-title">Track: </p>
+                <button class="close-form-btn" onclick="hideApplicationForm()">×</button>
+            </div>
+            
+            <div id="contact-form-container"></div>
+        </div>
+    </section>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="components/component-loader.js"></script>
+    <script src="script.js"></script>
+    <script src="scripts/internship.js"></script>
+</body>
+</html> 
