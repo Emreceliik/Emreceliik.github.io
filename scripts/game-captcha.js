@@ -6,7 +6,7 @@
 
 class GameCaptcha {
     constructor() {
-        this.games = ['dino', 'memory', 'colorMatch', 'puzzle', 'snake'];
+        this.games = ['timing', 'memory', 'colorMatch', 'math', 'target'];
         this.currentGame = null;
         this.score = 0;
         this.target = 10;
@@ -47,8 +47,8 @@ class GameCaptcha {
         this.currentGame = this.games[randomIndex];
         
         switch(this.currentGame) {
-            case 'dino':
-                this.loadDinoGame();
+            case 'timing':
+                this.loadTimingGame();
                 break;
             case 'memory':
                 this.loadMemoryGame();
@@ -56,11 +56,11 @@ class GameCaptcha {
             case 'colorMatch':
                 this.loadColorMatchGame();
                 break;
-            case 'puzzle':
-                this.loadPuzzleGame();
+            case 'math':
+                this.loadMathGame();
                 break;
-            case 'snake':
-                this.loadSnakeGame();
+            case 'target':
+                this.loadTargetGame();
                 break;
         }
     }
@@ -107,108 +107,118 @@ class GameCaptcha {
         }
     }
     
-    // 1. DINO JUMP GAME - Compact Version
-    loadDinoGame() {
-        this.gameTitle.textContent = '🦕 Dino Jump';
-        this.gameInstructions.textContent = 'Click anywhere to jump! Avoid 8 cacti to verify.';
-        this.target = 8;
+    // 1. TIMING GAME - Click the moving target at the right moment
+    loadTimingGame() {
+        this.gameTitle.textContent = '⏰ Perfect Timing';
+        this.gameInstructions.textContent = 'Click the moving target when it\'s in the green zone! Get 3 perfect hits.';
+        this.target = 3;
         this.updateScore();
         
-        this.gameCanvas.className = 'game-canvas dino-game';
-        this.gameCanvas.innerHTML = `
-            <div id="dino" style="
-                position: absolute;
-                bottom: 40px;
-                left: 30px;
-                width: 30px;
-                height: 30px;
-                background: #8B4513;
-                border-radius: 50%;
-                transition: bottom 0.3s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 20px;
-            ">🦕</div>
-            <div id="ground" style="
-                position: absolute;
-                bottom: 0;
-                width: 100%;
-                height: 40px;
-                background: linear-gradient(to top, #8B4513, #D2B48C);
-            "></div>
+        this.gameCanvas.className = 'game-canvas timing-game';
+        this.gameCanvas.style.cssText = `
+            position: relative;
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            border: 2px solid #333;
+            overflow: hidden;
         `;
+        this.gameCanvas.innerHTML = '';
         
-        let dino = document.getElementById('dino');
-        let isJumping = false;
-        let obstacles = [];
-        let gameSpeed = 3;
+        // Create target zone (green area)
+        const targetZone = document.createElement('div');
+        targetZone.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 40%;
+            width: 20%;
+            height: 60px;
+            background: rgba(0, 255, 0, 0.3);
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+            font-weight: bold;
+        `;
+        targetZone.textContent = 'TARGET ZONE';
+        this.gameCanvas.appendChild(targetZone);
         
-        const jump = () => {
-            if (!isJumping && !this.isCompleted) {
-                isJumping = true;
-                dino.style.bottom = '120px';
-                setTimeout(() => {
-                    dino.style.bottom = '40px';
-                    isJumping = false;
-                }, 500);
-            }
-        };
+        // Create moving target
+        const movingTarget = document.createElement('div');
+        movingTarget.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            background: #ff4444;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+        `;
+        movingTarget.textContent = '🎯';
+        this.gameCanvas.appendChild(movingTarget);
         
-        this.gameCanvas.addEventListener('click', jump);
+        let direction = 1;
+        let position = 0;
+        const speed = 2;
+        const canvasWidth = this.canvasWidth - 40;
         
-        const createObstacle = () => {
-            const obstacle = document.createElement('div');
-            obstacle.style.cssText = `
-                position: absolute;
-                bottom: 40px;
-                right: -25px;
-                width: 25px;
-                height: 35px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 18px;
-            `;
-            obstacle.textContent = '🌵';
-            this.gameCanvas.appendChild(obstacle);
-            obstacles.push(obstacle);
-        };
-        
-        const gameLoop = () => {
+        const moveTarget = () => {
             if (this.isCompleted) return;
             
-            obstacles.forEach((obstacle, index) => {
-                let obstacleRight = parseInt(obstacle.style.right) || 0;
-                obstacleRight += gameSpeed;
-                obstacle.style.right = obstacleRight + 'px';
-                
-                // Check collision (more forgiving hitbox)
-                if (obstacleRight > 50 && obstacleRight < 80 && !isJumping) {
-                    this.updateGameStatus('failed', '💥 Game Over! Click 🎲 New Game to try again.');
-                    clearInterval(this.gameInterval);
-                    return;
-                }
-                
-                // Remove obstacle and add score
-                if (obstacleRight > this.canvasWidth + 25) {
-                    obstacle.remove();
-                    obstacles.splice(index, 1);
-                    this.score++;
-                    this.updateScore();
-                    
-                    if (this.score >= this.target) {
-                        this.completeGame();
-                        return;
-                    }
-                }
-            });
+            position += speed * direction;
+            
+            if (position >= canvasWidth || position <= 0) {
+                direction *= -1;
+            }
+            
+            movingTarget.style.left = position + 'px';
         };
         
-        this.gameInterval = setInterval(() => {
-            if (Math.random() < 0.015 && !this.isCompleted) createObstacle();
-            gameLoop();
-        }, 50);
+        movingTarget.addEventListener('click', () => {
+            if (this.isCompleted) return;
+            
+            const targetLeft = position;
+            const zoneLeft = this.canvasWidth * 0.4;
+            const zoneRight = this.canvasWidth * 0.6;
+            
+            if (targetLeft >= zoneLeft && targetLeft <= zoneRight - 40) {
+                // Perfect hit!
+                this.score++;
+                this.updateScore();
+                movingTarget.style.background = '#00ff00';
+                movingTarget.textContent = '✅';
+                
+                setTimeout(() => {
+                    movingTarget.style.background = '#ff4444';
+                    movingTarget.textContent = '🎯';
+                }, 300);
+                
+                if (this.score >= this.target) {
+                    this.completeGame();
+                    return;
+                }
+            } else {
+                // Miss!
+                movingTarget.style.background = '#ff0000';
+                movingTarget.textContent = '❌';
+                setTimeout(() => {
+                    movingTarget.style.background = '#ff4444';
+                    movingTarget.textContent = '🎯';
+                }, 300);
+            }
+        });
+        
+        this.gameInterval = setInterval(moveTarget, 20);
     }
     
     // 2. MEMORY CARDS GAME - Smaller 3x2 Grid
@@ -239,15 +249,15 @@ class GameCaptcha {
             card.style.cssText = `
                 aspect-ratio: 1;
                 background: white;
-                border-radius: 8px;
+                border-radius: 6px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 1.5rem;
+                font-size: 1.2rem;
                 cursor: pointer;
                 transition: transform 0.3s ease;
                 user-select: none;
-                min-height: 60px;
+                min-height: 45px;
             `;
             card.dataset.emoji = emoji;
             card.dataset.index = index;
@@ -307,8 +317,8 @@ class GameCaptcha {
     // 3. COLOR MATCH GAME - Compact Version
     loadColorMatchGame() {
         this.gameTitle.textContent = '🎨 Color Match';
-        this.gameInstructions.textContent = 'Click the matching color! Get 6 correct matches.';
-        this.target = 6;
+        this.gameInstructions.textContent = 'Click the matching color! Get 3 correct matches.';
+        this.target = 3;
         this.updateScore();
         
         const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
@@ -395,227 +405,332 @@ class GameCaptcha {
         loadRound();
     }
     
-    // 4. PUZZLE GAME - 2x2 Mini Puzzle
-    loadPuzzleGame() {
-        this.gameTitle.textContent = '🧩 Number Puzzle';
-        this.gameInstructions.textContent = 'Arrange numbers 1-3 in order! Complete the puzzle to verify.';
-        this.target = 1;
+    // 4. MATH GAME - Simple arithmetic problems
+    loadMathGame() {
+        this.gameTitle.textContent = '🧮 Quick Math';
+        this.gameInstructions.textContent = 'Solve simple math problems! Get 3 correct answers to verify.';
+        this.target = 3;
         this.updateScore();
         
-        let numbers = [1, 2, 3, ''];
-        numbers.sort(() => Math.random() - 0.5);
-        
-        this.gameCanvas.className = 'game-canvas puzzle-game';
+        this.gameCanvas.className = 'game-canvas math-game';
         this.gameCanvas.style.cssText = `
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            padding: 40px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            padding: 30px;
+            background: linear-gradient(45deg, #ff9a56, #ffad56);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
         `;
         
-        const renderPuzzle = () => {
-            this.gameCanvas.innerHTML = '';
-            numbers.forEach((num, index) => {
-                const piece = document.createElement('div');
-                piece.style.cssText = `
-                    aspect-ratio: 1;
-                    background: ${num === '' ? 'transparent' : 'white'};
-                    border-radius: 8px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1.5rem;
-                    font-weight: bold;
-                    cursor: ${num === '' ? 'default' : 'pointer'};
-                    transition: all 0.3s ease;
-                    border: 2px ${num === '' ? 'dashed rgba(255,255,255,0.5)' : 'solid transparent'};
-                    min-height: 80px;
-                `;
-                piece.textContent = num;
-                piece.dataset.index = index;
-                
-                if (num !== '') {
-                    piece.addEventListener('mouseenter', () => {
-                        piece.style.borderColor = '#fff';
-                        piece.style.transform = 'scale(1.05)';
-                    });
-                    
-                    piece.addEventListener('mouseleave', () => {
-                        piece.style.borderColor = 'transparent';
-                        piece.style.transform = 'scale(1)';
-                    });
-                    
-                    piece.addEventListener('click', () => {
-                        const emptyIndex = numbers.indexOf('');
-                        const clickedIndex = index;
-                        
-                        // Check if adjacent to empty space
-                        const adjacentIndices = [
-                            emptyIndex - 1, emptyIndex + 1, // horizontal
-                            emptyIndex - 2, emptyIndex + 2  // vertical
-                        ].filter(i => {
-                            if (i < 0 || i > 3) return false;
-                            if (emptyIndex % 2 === 0 && i === emptyIndex - 1) return false;
-                            if (emptyIndex % 2 === 1 && i === emptyIndex + 1) return false;
-                            return true;
-                        });
-                        
-                        if (adjacentIndices.includes(clickedIndex)) {
-                            // Swap positions
-                            [numbers[emptyIndex], numbers[clickedIndex]] = [numbers[clickedIndex], numbers[emptyIndex]];
-                            renderPuzzle();
-                            
-                            // Check if solved
-                            const solved = numbers.slice(0, 3).every((num, i) => num === i + 1);
-                            if (solved) {
-                                this.score = 1;
-                                this.updateScore();
-                                this.completeGame();
-                            }
-                        }
-                    });
+        let currentQuestion = {};
+        
+        const generateQuestion = () => {
+            const operations = ['+', '-', '×'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            let num1, num2, correctAnswer;
+            
+            switch(operation) {
+                case '+':
+                    num1 = Math.floor(Math.random() * 20) + 1;
+                    num2 = Math.floor(Math.random() * 20) + 1;
+                    correctAnswer = num1 + num2;
+                    break;
+                case '-':
+                    num1 = Math.floor(Math.random() * 20) + 10;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    correctAnswer = num1 - num2;
+                    break;
+                case '×':
+                    num1 = Math.floor(Math.random() * 5) + 2;
+                    num2 = Math.floor(Math.random() * 5) + 2;
+                    correctAnswer = num1 * num2;
+                    break;
+            }
+            
+            // Generate wrong answers
+            const wrongAnswers = [];
+            while (wrongAnswers.length < 2) {
+                const wrong = correctAnswer + Math.floor(Math.random() * 10) - 5;
+                if (wrong !== correctAnswer && wrong > 0 && !wrongAnswers.includes(wrong)) {
+                    wrongAnswers.push(wrong);
                 }
+            }
+            
+            const allAnswers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+            
+            return {
+                question: `${num1} ${operation} ${num2} = ?`,
+                answers: allAnswers,
+                correct: correctAnswer
+            };
+        };
+        
+        const loadQuestion = () => {
+            if (this.isCompleted) return;
+            
+            currentQuestion = generateQuestion();
+            
+            this.gameCanvas.innerHTML = `
+                <div style="
+                    font-size: 2rem;
+                    font-weight: bold;
+                    color: white;
+                    margin-bottom: 20px;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                ">${currentQuestion.question}</div>
+                <div style="
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 15px;
+                    width: 100%;
+                    max-width: 300px;
+                "></div>
+            `;
+            
+            const answersContainer = this.gameCanvas.querySelector('div:last-child');
+            
+            currentQuestion.answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.style.cssText = `
+                    padding: 15px;
+                    font-size: 1.3rem;
+                    font-weight: bold;
+                    background: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    color: #333;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                `;
+                button.textContent = answer;
                 
-                this.gameCanvas.appendChild(piece);
+                button.addEventListener('mouseenter', () => {
+                    button.style.transform = 'scale(1.05)';
+                    button.style.background = '#f0f0f0';
+                });
+                
+                button.addEventListener('mouseleave', () => {
+                    button.style.transform = 'scale(1)';
+                    button.style.background = 'white';
+                });
+                
+                button.addEventListener('click', () => {
+                    if (answer === currentQuestion.correct) {
+                        button.style.background = '#4CAF50';
+                        button.style.color = 'white';
+                        button.textContent = '✅ ' + answer;
+                        
+                        this.score++;
+                        this.updateScore();
+                        
+                        setTimeout(() => {
+                            if (this.score >= this.target) {
+                                this.completeGame();
+                            } else {
+                                loadQuestion();
+                            }
+                        }, 1000);
+                    } else {
+                        button.style.background = '#f44336';
+                        button.style.color = 'white';
+                        button.textContent = '❌ ' + answer;
+                        
+                        // Show correct answer
+                        const correctBtn = [...answersContainer.children].find(btn => 
+                            parseInt(btn.textContent) === currentQuestion.correct
+                        );
+                        if (correctBtn) {
+                            correctBtn.style.background = '#4CAF50';
+                            correctBtn.style.color = 'white';
+                            correctBtn.textContent = '✅ ' + currentQuestion.correct;
+                        }
+                        
+                        setTimeout(() => {
+                            loadQuestion();
+                        }, 1500);
+                    }
+                    
+                    // Disable all buttons
+                    [...answersContainer.children].forEach(btn => {
+                        btn.disabled = true;
+                        btn.style.cursor = 'default';
+                    });
+                });
+                
+                answersContainer.appendChild(button);
             });
         };
         
-        renderPuzzle();
+        loadQuestion();
     }
     
-    // 5. SNAKE GAME - Click Direction Control
-    loadSnakeGame() {
-        this.gameTitle.textContent = '🐍 Snake Mini';
-        this.gameInstructions.textContent = 'Click LEFT/RIGHT/UP/DOWN sides to move! Eat 4 apples to verify.';
+    // 5. TARGET SHOOTER GAME - Click the moving targets
+    loadTargetGame() {
+        this.gameTitle.textContent = '🎯 Target Shooter';
+        this.gameInstructions.textContent = 'Click the moving targets to shoot them! Hit 4 targets to verify.';
         this.target = 4;
         this.updateScore();
         
-        this.gameCanvas.className = 'game-canvas snake-game';
+        this.gameCanvas.className = 'game-canvas target-game';
         this.gameCanvas.style.cssText = `
             position: relative;
-            background: #111;
-            border: 2px solid #333;
+            background: linear-gradient(45deg, #0f0f23, #1a1a2e);
+            border: 2px solid #16213e;
+            overflow: hidden;
+            cursor: crosshair;
         `;
         this.gameCanvas.innerHTML = '';
         
-        const boardSize = 12; // Smaller board for 300px height
-        let snake = [{x: 6, y: 6}];
-        let food = {x: 9, y: 9};
-        let direction = {x: 1, y: 0};
+        let targets = [];
         let gameRunning = true;
-        const cellSize = Math.min(20, (this.canvasWidth - 4) / boardSize);
         
-        const drawGame = () => {
-            this.gameCanvas.innerHTML = '';
-            
-            // Draw snake
-            snake.forEach((segment, index) => {
-                const snakeElement = document.createElement('div');
-                snakeElement.style.cssText = `
-                    position: absolute;
-                    width: ${cellSize}px;
-                    height: ${cellSize}px;
-                    background: ${index === 0 ? '#00ff00' : '#90EE90'};
-                    border-radius: 2px;
-                    left: ${segment.x * cellSize}px;
-                    top: ${segment.y * cellSize}px;
-                `;
-                this.gameCanvas.appendChild(snakeElement);
-            });
-            
-            // Draw food
-            const foodElement = document.createElement('div');
-            foodElement.style.cssText = `
-                position: absolute;
-                width: ${cellSize}px;
-                height: ${cellSize}px;
-                background: #ff0000;
-                border-radius: 50%;
-                left: ${food.x * cellSize}px;
-                top: ${food.y * cellSize}px;
-            `;
-            this.gameCanvas.appendChild(foodElement);
-        };
-        
-        const moveSnake = () => {
+        const createTarget = () => {
             if (!gameRunning || this.isCompleted) return;
             
-            const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
+            const target = document.createElement('div');
+            const size = Math.random() * 20 + 30; // 30-50px
+            const startX = Math.random() < 0.5 ? -size : this.canvasWidth;
+            const startY = Math.random() * (this.canvasHeight - 100) + 50;
+            const endX = startX === -size ? this.canvasWidth + size : -size;
+            const endY = Math.random() * (this.canvasHeight - 100) + 50;
             
-            // Check walls
-            if (head.x < 0 || head.x >= boardSize || head.y < 0 || head.y >= boardSize) {
-                gameRunning = false;
-                this.updateGameStatus('failed', '💥 Hit the wall! Click 🎲 New Game to try again.');
-                return;
-            }
+            target.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${startX}px;
+                top: ${startY}px;
+                background: radial-gradient(circle, #ff4757, #ff3742);
+                border: 3px solid #fff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: ${size * 0.4}px;
+                color: white;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                z-index: 10;
+                box-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+            `;
+            target.textContent = '🎯';
             
-            // Check self collision
-            if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-                gameRunning = false;
-                this.updateGameStatus('failed', '💥 Hit yourself! Click 🎲 New Game to try again.');
-                return;
-            }
+            target.addEventListener('mouseenter', () => {
+                target.style.transform = 'scale(1.1)';
+                target.style.boxShadow = '0 0 25px rgba(255, 71, 87, 0.8)';
+            });
             
-            snake.unshift(head);
+            target.addEventListener('mouseleave', () => {
+                target.style.transform = 'scale(1)';
+                target.style.boxShadow = '0 0 15px rgba(255, 71, 87, 0.5)';
+            });
             
-            // Check food
-            if (head.x === food.x && head.y === food.y) {
+            target.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Hit effect
+                target.style.background = 'radial-gradient(circle, #2ed573, #20bf6b)';
+                target.textContent = '💥';
+                target.style.transform = 'scale(1.3)';
+                target.style.transition = 'all 0.3s ease';
+                
                 this.score++;
                 this.updateScore();
                 
+                setTimeout(() => {
+                    if (target.parentNode) {
+                        target.remove();
+                    }
+                    const index = targets.indexOf(target);
+                    if (index > -1) {
+                        targets.splice(index, 1);
+                    }
+                }, 300);
+                
                 if (this.score >= this.target) {
+                    gameRunning = false;
                     this.completeGame();
                     return;
                 }
-                
-                // Generate new food
-                do {
-                    food = {
-                        x: Math.floor(Math.random() * boardSize),
-                        y: Math.floor(Math.random() * boardSize)
-                    };
-                } while (snake.some(segment => segment.x === food.x && segment.y === food.y));
-            } else {
-                snake.pop();
-            }
+            });
             
-            drawGame();
+            this.gameCanvas.appendChild(target);
+            targets.push(target);
+            
+            // Animate target movement
+            const duration = Math.random() * 3000 + 2000; // 2-5 seconds
+            const startTime = Date.now();
+            
+            const animateTarget = () => {
+                if (!gameRunning || this.isCompleted || !target.parentNode) return;
+                
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / duration;
+                
+                if (progress >= 1) {
+                    // Target escaped
+                    if (target.parentNode) {
+                        target.remove();
+                    }
+                    const index = targets.indexOf(target);
+                    if (index > -1) {
+                        targets.splice(index, 1);
+                    }
+                    return;
+                }
+                
+                // Smooth movement from start to end
+                const currentX = startX + (endX - startX) * progress;
+                const currentY = startY + (endY - startY) * progress;
+                
+                target.style.left = currentX + 'px';
+                target.style.top = currentY + 'px';
+                
+                requestAnimationFrame(animateTarget);
+            };
+            
+            animateTarget();
+            
+            // Remove target after duration if not clicked
+            setTimeout(() => {
+                if (target.parentNode) {
+                    target.remove();
+                }
+                const index = targets.indexOf(target);
+                if (index > -1) {
+                    targets.splice(index, 1);
+                }
+            }, duration + 500);
         };
         
-        // Mouse-only directional controls
-        this.gameCanvas.addEventListener('click', (e) => {
+        // Create crosshair cursor effect
+        this.gameCanvas.addEventListener('mousemove', (e) => {
             if (!gameRunning || this.isCompleted) return;
             
             const rect = this.gameCanvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
             
-            // Determine direction based on click position
-            const deltaX = x - centerX;
-            const deltaY = y - centerY;
-            
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                // Horizontal movement
-                if (deltaX > 0 && direction.x !== -1) {
-                    direction = {x: 1, y: 0}; // Right
-                } else if (deltaX < 0 && direction.x !== 1) {
-                    direction = {x: -1, y: 0}; // Left
-                }
-            } else {
-                // Vertical movement
-                if (deltaY > 0 && direction.y !== -1) {
-                    direction = {x: 0, y: 1}; // Down
-                } else if (deltaY < 0 && direction.y !== 1) {
-                    direction = {x: 0, y: -1}; // Up
-                }
-            }
+            // Update cursor position for visual feedback
+            this.gameCanvas.style.background = `
+                linear-gradient(45deg, #0f0f23, #1a1a2e),
+                radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.1) 0%, transparent 20px)
+            `;
         });
         
-        drawGame();
-        this.gameInterval = setInterval(moveSnake, 250);
+        // Spawn targets at intervals
+        this.gameInterval = setInterval(() => {
+            if (gameRunning && !this.isCompleted && targets.length < 3) {
+                createTarget();
+            }
+        }, 1000);
+        
+        // Create first target immediately
+        createTarget();
     }
 }
 
