@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply - Rigid Logic Careers</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Apply for positions at Rigid Logic. Submit your application for Unity Developer, 2D-3D Artist, Sound Artist positions or internship programs.">
+    <meta name="keywords" content="Rigid Logic, RigidLogic, job application, career application, Unity Developer application, game development jobs">
+    <meta name="author" content="Rigid Logic">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://emreceliik.github.io/apply.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://emreceliik.github.io/apply.html">
+    <meta property="og:title" content="Apply Now - Join Rigid Logic Team">
+    <meta property="og:description" content="Submit your application to join Rigid Logic team. Open positions in game development, art, sound design and internship opportunities.">
+    <meta property="og:image" content="https://emreceliik.github.io/logo.jpg">
+    <meta property="og:site_name" content="Rigid Logic">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/positions.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- EmailJS CDN -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <style>
+        .apply-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+        
+        .apply-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .position-selector {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .position-selector h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .position-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .position-option {
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .position-option:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+        
+        .position-option.selected {
+            border-color: #667eea;
+            background-color: #667eea;
+            color: white;
+        }
+        
+        .application-form {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+        
+        .file-upload input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Container -->
+    <div id="navbar-container"></div>
+
+    <!-- Hero Section -->
+    <section class="apply-hero">
+        <div class="container">
+            <h1>Apply to Join Our Team</h1>
+            <p>Take the next step in your career with Rigid Logic</p>
+        </div>
+    </section>
+
+    <!-- Application Section -->
+    <section class="apply-section">
+        <div class="apply-container">
+            <a href="javascript:history.back()" class="back-link">← Back to Positions</a>
+            
+            <!-- Success/Error Messages -->
+            <div id="success-message" class="success-message">
+                Your application has been submitted successfully! We'll get back to you soon.
+            </div>
+            <div id="error-message" class="error-message">
+                There was an error submitting your application. Please try again.
+            </div>
+            
+            <!-- Position Selector -->
+            <div class="position-selector">
+                <h3>Select Position</h3>
+                <div class="position-options">
+                    <div class="position-option" data-position="Unity Developer">
+                        <strong>Unity Developer</strong>
+                        <p>Full-time Position</p>
+                    </div>
+                    <div class="position-option" data-position="2D-3D Artist">
+                        <strong>2D-3D Artist</strong>
+                        <p>Full-time Position</p>
+                    </div>
+                    <div class="position-option" data-position="Sound Artist">
+                        <strong>Sound Artist</strong>
+                        <p>Full-time Position</p>
+                    </div>
+                    <div class="position-option" data-position="Game Development Internship">
+                        <strong>Game Development</strong>
+                        <p>Internship Program</p>
+                    </div>
+                    <div class="position-option" data-position="VR/AR Development Internship">
+                        <strong>VR/AR Development</strong>
+                        <p>Internship Program</p>
+                    </div>
+                    <div class="position-option" data-position="UI/UX Design Internship">
+                        <strong>UI/UX Design</strong>
+                        <p>Internship Program</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Application Form -->
+            <div class="application-form">
+                <h3>Application Form</h3>
+                <form id="application-form">
+                    <input type="hidden" id="selected-position" name="position" value="">
+                    
+                    <div class="form-group">
+                        <label for="full-name">Full Name *</label>
+                        <input type="text" id="full-name" name="full_name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" placeholder="City, Country">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="experience">Years of Experience</label>
+                        <select id="experience" name="experience">
+                            <option value="">Select experience level</option>
+                            <option value="0-1">0-1 years</option>
+                            <option value="1-3">1-3 years</option>
+                            <option value="3-5">3-5 years</option>
+                            <option value="5-10">5-10 years</option>
+                            <option value="10+">10+ years</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="portfolio">Portfolio/Website URL</label>
+                        <input type="url" id="portfolio" name="portfolio" placeholder="https://yourportfolio.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="linkedin">LinkedIn Profile</label>
+                        <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cover-letter">Cover Letter / Why do you want to join Rigid Logic? *</label>
+                        <textarea id="cover-letter" name="cover_letter" placeholder="Tell us about yourself and why you're interested in this position..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="skills">Technical Skills</label>
+                        <textarea id="skills" name="skills" placeholder="List your relevant technical skills, programming languages, software, etc."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Resume (CV) *</label>
+                        <div class="file-upload">
+                            <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+                            <p>📄 Click to upload your resume</p>
+                            <small>Supported formats: PDF, DOC, DOCX (Max 5MB)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Additional Documents (Portfolio, Projects, etc.)</label>
+                        <div class="file-upload">
+                            <input type="file" id="additional-files" name="additional_files" multiple accept=".pdf,.doc,.docx,.zip,.jpg,.png">
+                            <p>📎 Click to upload additional files</p>
+                            <small>Optional: Portfolio, project files, etc. (Max 10MB per file)</small>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Submit Application</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Component Loader -->
+    <script src="components/component-loader.js"></script>
+    
+    <!-- Application Form Script -->
+    <script>
+        // Position selection functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const positionOptions = document.querySelectorAll('.position-option');
+            const selectedPositionInput = document.getElementById('selected-position');
+            
+            // Get position from URL parameter if available
+            const urlParams = new URLSearchParams(window.location.search);
+            const positionFromUrl = urlParams.get('position');
+            
+            if (positionFromUrl) {
+                const matchingOption = Array.from(positionOptions).find(option => 
+                    option.dataset.position === positionFromUrl
+                );
+                if (matchingOption) {
+                    selectPosition(matchingOption, positionFromUrl);
+                }
+            }
+            
+            positionOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const position = this.dataset.position;
+                    selectPosition(this, position);
+                });
+            });
+            
+            function selectPosition(optionElement, position) {
+                // Remove previous selection
+                positionOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add selection to clicked option
+                optionElement.classList.add('selected');
+                // Update hidden input
+                selectedPositionInput.value = position;
+            }
+            
+            // File upload functionality
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.addEventListener('change', function(e) {
+                    const fileUpload = this.closest('.file-upload');
+                    const fileText = fileUpload.querySelector('p');
+                    const files = e.target.files;
+                    
+                    if (files.length > 0) {
+                        if (files.length === 1) {
+                            fileText.textContent = `📄 ${files[0].name}`;
+                        } else {
+                            fileText.textContent = `📎 ${files.length} files selected`;
+                        }
+                        fileUpload.style.borderColor = '#28a745';
+                        fileUpload.style.backgroundColor = '#f8fff9';
+                    }
+                });
+            });
+            
+            // Form submission
+            const form = document.getElementById('application-form');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const selectedPosition = selectedPositionInput.value;
+                if (!selectedPosition) {
+                    alert('Please select a position first.');
+                    return;
+                }
+                
+                // Show loading state
+                const submitBtn = form.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Submitting...';
+                submitBtn.disabled = true;
+                
+                // Prepare form data
+                const formData = new FormData(form);
+                
+                // Here you would normally send the data to your backend
+                // For now, we'll simulate a successful submission
+                setTimeout(() => {
+                    document.getElementById('success-message').style.display = 'block';
+                    form.style.display = 'none';
+                    
+                    // Scroll to success message
+                    document.getElementById('success-message').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html> 

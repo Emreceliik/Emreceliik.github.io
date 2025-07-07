@@ -18,15 +18,11 @@
     <meta property="og:url" content="https://emreceliik.github.io/openpositions.html">
     <meta property="og:title" content="Careers - Unity Developer, 2D-3D Artist, Sound Artist Jobs at Rigid Logic">
     <meta property="og:description" content="Join Rigid Logic team! We're hiring Unity Developers, 2D-3D Artists, and Sound Artists for exciting technology projects.">
-    <meta property="og:image" content="https://emreceliik.github.io/logo.svg">
-    <meta property="og:image:width" content="512">
-    <meta property="og:image:height" content="512">
-    <meta property="og:image:type" content="image/svg+xml">
+    <meta property="og:image" content="https://emreceliik.github.io/logo.jpg">
     <meta property="og:site_name" content="Rigid Logic">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link rel="alternate icon" type="image/jpeg" href="logo.jpg">
+    <link rel="icon" type="image/x-icon" href="logo.jpg">
     <link rel="apple-touch-icon" href="logo.jpg">
     
     <!-- Stylesheets -->
@@ -112,7 +108,7 @@
                         </ul>
                     </div>
                     <div class="apply-section">
-                        <button class="apply-btn" onclick="showApplicationForm('Unity Developer')">Apply Now</button>
+                        <a href="apply.html?position=Unity Developer" class="apply-btn">Apply Now</a>
                     </div>
                 </div>
             </div>
@@ -147,7 +143,7 @@
                         </ul>
                     </div>
                     <div class="apply-section">
-                        <button class="apply-btn" onclick="showApplicationForm('2D-3D Artist')">Apply Now</button>
+                        <a href="apply.html?position=2D-3D Artist" class="apply-btn">Apply Now</a>
                     </div>
                 </div>
             </div>
@@ -182,97 +178,20 @@
                         </ul>
                     </div>
                     <div class="apply-section">
-                        <button class="apply-btn" onclick="showApplicationForm('Sound Artist')">Apply Now</button>
+                        <a href="apply.html?position=Sound Artist" class="apply-btn">Apply Now</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Application Form Section -->
-    <section id="application-form" class="application-form-section" style="display: none;">
-        <div class="container">
-            <div class="form-header">
-                <h2>Apply for Position</h2>
-                <p id="position-title">Position: </p>
-                <button class="close-form-btn" onclick="hideApplicationForm()">×</button>
-            </div>
-            
-            <div id="contact-form-container"></div>
-        </div>
-    </section>
+
 
     <!-- Footer Container -->
     <div id="footer-container"></div>
 
     <!-- Scripts -->
-    <script>
-        // Define functions immediately for onclick handlers
-        let currentPosition = '';
-        
-        function showApplicationForm(positionName) {
-            console.log('showApplicationForm called with:', positionName);
-            currentPosition = positionName;
-            const positionTitle = document.getElementById('position-title');
-            const applicationForm = document.getElementById('application-form');
-            
-            if (positionTitle) {
-                positionTitle.textContent = `Position: ${positionName}`;
-            }
-            
-            if (applicationForm) {
-                applicationForm.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-                
-                // Load contact form immediately
-                setTimeout(() => {
-                    if (typeof loadComponent === 'function') {
-                        loadComponent('contact-form', 'contact-form-container').then(() => {
-                            setTimeout(() => {
-                                const subjectField = document.getElementById('subject');
-                                if (subjectField) {
-                                    subjectField.value = `Application for ${positionName} Position`;
-                                }
-                            }, 100);
-                        });
-                    }
-                }, 100);
-            }
-        }
-        
-        function hideApplicationForm() {
-            const applicationForm = document.getElementById('application-form');
-            if (applicationForm) {
-                applicationForm.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-            currentPosition = '';
-        }
-        
-        // Add event listeners when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            // Close form when clicking outside
-            document.addEventListener('click', function(event) {
-                const applicationForm = document.getElementById('application-form');
-                const formContainer = applicationForm?.querySelector('.container');
-                
-                if (applicationForm && 
-                    applicationForm.style.display === 'block' && 
-                    !formContainer?.contains(event.target)) {
-                    hideApplicationForm();
-                }
-            });
-
-            // Escape key to close form
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    hideApplicationForm();
-                }
-            });
-        });
-    </script>
     <script src="components/component-loader.js"></script>
     <script src="script.js"></script>
-    <script src="scripts/positions.js"></script>
 </body>
 </html> 

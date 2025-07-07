@@ -18,15 +18,11 @@
     <meta property="og:url" content="https://emreceliik.github.io/internship.html">
     <meta property="og:title" content="Internship Program - Game Development, VR/AR, UI/UX Internships at Rigid Logic">
     <meta property="og:description" content="Join Rigid Logic's comprehensive internship program! Game Development, VR/AR Development, and UI/UX Design opportunities for students.">
-    <meta property="og:image" content="https://emreceliik.github.io/logo.svg">
-    <meta property="og:image:width" content="512">
-    <meta property="og:image:height" content="512">
-    <meta property="og:image:type" content="image/svg+xml">
+    <meta property="og:image" content="https://emreceliik.github.io/logo.jpg">
     <meta property="og:site_name" content="Rigid Logic">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link rel="alternate icon" type="image/jpeg" href="logo.jpg">
+    <link rel="icon" type="image/x-icon" href="logo.jpg">
     <link rel="apple-touch-icon" href="logo.jpg">
     
     <!-- Stylesheets -->
@@ -137,7 +133,7 @@
                         </ul>
                     </div>
                     <div class="apply-section">
-                        <button class="apply-btn" onclick="showApplicationForm('Game Development Internship')">Apply Now</button>
+                        <a href="apply.html?position=Game Development Internship" class="apply-btn">Apply Now</a>
                     </div>
                 </div>
             </div>
@@ -168,7 +164,7 @@
                         </ul>
                     </div>
                     <div class="apply-section">
-                        <button class="apply-btn" onclick="showApplicationForm('VR/AR Development Internship')">Apply Now</button>
+                        <a href="apply.html?position=VR/AR Development Internship" class="apply-btn">Apply Now</a>
                     </div>
                 </div>
             </div>
@@ -199,7 +195,7 @@
                         </ul>
                     </div>
                     <div class="apply-section">
-                        <button class="apply-btn" onclick="showApplicationForm('UI/UX Design Internship')">Apply Now</button>
+                        <a href="apply.html?position=UI/UX Design Internship" class="apply-btn">Apply Now</a>
                     </div>
                 </div>
             </div>
@@ -235,90 +231,13 @@
         </div>
     </section>
 
-    <!-- Application Form Section -->
-    <section id="application-form" class="application-form-section" style="display: none;">
-        <div class="container">
-            <div class="form-header">
-                <h2>Apply for Internship</h2>
-                <p id="position-title">Track: </p>
-                <button class="close-form-btn" onclick="hideApplicationForm()">×</button>
-            </div>
-            
-            <div id="contact-form-container"></div>
-        </div>
-    </section>
+
 
     <!-- Footer Container -->
     <div id="footer-container"></div>
 
     <!-- Scripts -->
-    <script>
-        // Define functions immediately for onclick handlers
-        let currentTrack = '';
-        
-        function showApplicationForm(trackName) {
-            console.log('showApplicationForm called with:', trackName);
-            currentTrack = trackName;
-            const positionTitle = document.getElementById('position-title');
-            const applicationForm = document.getElementById('application-form');
-            
-            if (positionTitle) {
-                positionTitle.textContent = `Track: ${trackName}`;
-            }
-            
-            if (applicationForm) {
-                applicationForm.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-                
-                // Load contact form immediately
-                setTimeout(() => {
-                    if (typeof loadComponent === 'function') {
-                        loadComponent('contact-form', 'contact-form-container').then(() => {
-                            setTimeout(() => {
-                                const subjectField = document.getElementById('subject');
-                                if (subjectField) {
-                                    subjectField.value = `Application for ${trackName}`;
-                                }
-                            }, 100);
-                        });
-                    }
-                }, 100);
-            }
-        }
-        
-        function hideApplicationForm() {
-            const applicationForm = document.getElementById('application-form');
-            if (applicationForm) {
-                applicationForm.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-            currentTrack = '';
-        }
-        
-        // Add event listeners when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            // Close form when clicking outside
-            document.addEventListener('click', function(event) {
-                const applicationForm = document.getElementById('application-form');
-                const formContainer = applicationForm?.querySelector('.container');
-                
-                if (applicationForm && 
-                    applicationForm.style.display === 'block' && 
-                    !formContainer?.contains(event.target)) {
-                    hideApplicationForm();
-                }
-            });
-
-            // Escape key to close form
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    hideApplicationForm();
-                }
-            });
-        });
-    </script>
     <script src="components/component-loader.js"></script>
     <script src="script.js"></script>
-    <script src="scripts/internship.js"></script>
 </body>
 </html> 
