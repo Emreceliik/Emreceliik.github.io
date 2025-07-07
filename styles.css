@@ -568,135 +568,13 @@ section {
     color: #721c24;
 }
 
-/* Game Elements */
+/* Game Elements - Responsive and compact */
 .dino-game {
     position: relative;
     background: linear-gradient(to bottom, #87CEEB 0%, #98FB98 70%, #90EE90 100%);
 }
 
-.memory-game {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    padding: 20px;
-    background: linear-gradient(45deg, #667eea, #764ba2);
-}
-
-.memory-card {
-    aspect-ratio: 1;
-    background: white;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    user-select: none;
-}
-
-.memory-card:hover {
-    transform: scale(1.05);
-}
-
-.memory-card.flipped {
-    background: #f0f8ff;
-}
-
-.memory-card.matched {
-    background: #d4edda;
-    transform: scale(0.9);
-}
-
-.color-match-game {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-}
-
-.color-target {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-bottom: 20px;
-    border: 4px solid white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.color-options {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-}
-
-.color-option {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 3px solid white;
-    transition: transform 0.3s ease;
-}
-
-.color-option:hover {
-    transform: scale(1.1);
-}
-
-.puzzle-game {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-    padding: 20px;
-    background: linear-gradient(45deg, #667eea, #764ba2);
-}
-
-.puzzle-piece {
-    aspect-ratio: 1;
-    background: white;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
-
-.puzzle-piece:hover {
-    border-color: #fff;
-    transform: scale(1.05);
-}
-
-.puzzle-piece.empty {
-    background: transparent;
-    border: 2px dashed rgba(255,255,255,0.5);
-}
-
-.snake-game {
-    position: relative;
-    background: #000;
-    border: 2px solid #333;
-}
-
-.snake-pixel {
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    background: #00ff00;
-    border-radius: 2px;
-}
-
-.food-pixel {
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    background: #ff0000;
-    border-radius: 50%;
-}
+/* Game-specific styles are now inline for better responsiveness */
 
 .submit-btn {
     width: 100%;
@@ -938,6 +816,31 @@ section {
     
     .social-links {
         justify-content: center;
+    }
+
+    /* Game CAPTCHA mobile optimizations */
+    .game-captcha-group {
+        margin: 15px 0;
+        padding: 15px;
+    }
+
+    .game-header {
+        padding: 10px 15px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .game-controls {
+        justify-content: center;
+    }
+
+    .game-canvas {
+        height: 250px; /* Slightly smaller on mobile */
+    }
+
+    .game-instructions {
+        padding: 10px 15px;
     }
 }
 

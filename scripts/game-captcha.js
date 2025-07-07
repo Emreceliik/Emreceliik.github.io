@@ -1,6 +1,7 @@
 /**
  * Game-based CAPTCHA System
  * 5 Different Mini Games: Dino Jump, Memory Cards, Color Match, Puzzle, Snake
+ * Mouse-only controls, optimized for 300px height canvas
  */
 
 class GameCaptcha {
@@ -11,6 +12,8 @@ class GameCaptcha {
         this.target = 10;
         this.isCompleted = false;
         this.gameInterval = null;
+        this.canvasWidth = 0;
+        this.canvasHeight = 300;
         
         this.initializeElements();
         this.loadRandomGame();
@@ -27,6 +30,11 @@ class GameCaptcha {
         this.submitBtn = document.getElementById('submitBtn');
         this.submitText = document.getElementById('submitText');
         this.refreshBtn = document.getElementById('refreshGame');
+        
+        // Get canvas dimensions
+        if (this.gameCanvas) {
+            this.canvasWidth = this.gameCanvas.offsetWidth;
+        }
         
         if (this.refreshBtn) {
             this.refreshBtn.addEventListener('click', () => this.loadRandomGame());
@@ -72,6 +80,9 @@ class GameCaptcha {
         
         this.gameCanvas.innerHTML = '';
         this.gameCanvas.className = 'game-canvas';
+        
+        // Update canvas dimensions
+        this.canvasWidth = this.gameCanvas.offsetWidth;
     }
     
     updateScore() {
@@ -96,30 +107,34 @@ class GameCaptcha {
         }
     }
     
-    // 1. DINO JUMP GAME
+    // 1. DINO JUMP GAME - Compact Version
     loadDinoGame() {
         this.gameTitle.textContent = '🦕 Dino Jump';
-        this.gameInstructions.textContent = 'Click to jump and avoid obstacles! Reach 10 points to verify.';
-        this.target = 10;
+        this.gameInstructions.textContent = 'Click anywhere to jump! Avoid 8 cacti to verify.';
+        this.target = 8;
         this.updateScore();
         
         this.gameCanvas.className = 'game-canvas dino-game';
         this.gameCanvas.innerHTML = `
             <div id="dino" style="
                 position: absolute;
-                bottom: 50px;
-                left: 50px;
-                width: 40px;
-                height: 40px;
+                bottom: 40px;
+                left: 30px;
+                width: 30px;
+                height: 30px;
                 background: #8B4513;
-                border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+                border-radius: 50%;
                 transition: bottom 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
             ">🦕</div>
             <div id="ground" style="
                 position: absolute;
                 bottom: 0;
                 width: 100%;
-                height: 50px;
+                height: 40px;
                 background: linear-gradient(to top, #8B4513, #D2B48C);
             "></div>
         `;
@@ -127,16 +142,16 @@ class GameCaptcha {
         let dino = document.getElementById('dino');
         let isJumping = false;
         let obstacles = [];
-        let gameSpeed = 2;
+        let gameSpeed = 3;
         
         const jump = () => {
-            if (!isJumping) {
+            if (!isJumping && !this.isCompleted) {
                 isJumping = true;
                 dino.style.bottom = '120px';
                 setTimeout(() => {
-                    dino.style.bottom = '50px';
+                    dino.style.bottom = '40px';
                     isJumping = false;
-                }, 600);
+                }, 500);
             }
         };
         
@@ -146,12 +161,14 @@ class GameCaptcha {
             const obstacle = document.createElement('div');
             obstacle.style.cssText = `
                 position: absolute;
-                bottom: 50px;
-                right: -30px;
-                width: 30px;
-                height: 40px;
-                background: #654321;
-                border-radius: 4px;
+                bottom: 40px;
+                right: -25px;
+                width: 25px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
             `;
             obstacle.textContent = '🌵';
             this.gameCanvas.appendChild(obstacle);
@@ -159,20 +176,22 @@ class GameCaptcha {
         };
         
         const gameLoop = () => {
+            if (this.isCompleted) return;
+            
             obstacles.forEach((obstacle, index) => {
-                let obstacleLeft = parseInt(obstacle.style.right);
-                obstacleLeft += gameSpeed;
-                obstacle.style.right = obstacleLeft + 'px';
+                let obstacleRight = parseInt(obstacle.style.right) || 0;
+                obstacleRight += gameSpeed;
+                obstacle.style.right = obstacleRight + 'px';
                 
-                // Check collision
-                if (obstacleLeft > 80 && obstacleLeft < 120 && !isJumping) {
+                // Check collision (more forgiving hitbox)
+                if (obstacleRight > 50 && obstacleRight < 80 && !isJumping) {
                     this.updateGameStatus('failed', '💥 Game Over! Click 🎲 New Game to try again.');
                     clearInterval(this.gameInterval);
                     return;
                 }
                 
                 // Remove obstacle and add score
-                if (obstacleLeft > 600) {
+                if (obstacleRight > this.canvasWidth + 25) {
                     obstacle.remove();
                     obstacles.splice(index, 1);
                     this.score++;
@@ -180,28 +199,36 @@ class GameCaptcha {
                     
                     if (this.score >= this.target) {
                         this.completeGame();
+                        return;
                     }
                 }
             });
         };
         
         this.gameInterval = setInterval(() => {
-            if (Math.random() < 0.02) createObstacle();
+            if (Math.random() < 0.015 && !this.isCompleted) createObstacle();
             gameLoop();
         }, 50);
     }
     
-    // 2. MEMORY CARDS GAME
+    // 2. MEMORY CARDS GAME - Smaller 3x2 Grid
     loadMemoryGame() {
         this.gameTitle.textContent = '🧠 Memory Cards';
-        this.gameInstructions.textContent = 'Match pairs of cards! Find 5 pairs to verify.';
-        this.target = 5;
+        this.gameInstructions.textContent = 'Match pairs of cards! Find 3 pairs to verify.';
+        this.target = 3;
         this.updateScore();
         
-        const emojis = ['🎮', '🎯', '🎨', '🎪', '🎭', '🎵', '🎸', '🎺'];
-        const cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+        const emojis = ['🎮', '🎯', '🎨', '🎪', '🎭', '🎵'];
+        const cards = [...emojis.slice(0, 3), ...emojis.slice(0, 3)].sort(() => Math.random() - 0.5);
         
         this.gameCanvas.className = 'game-canvas memory-game';
+        this.gameCanvas.style.cssText = `
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        `;
         this.gameCanvas.innerHTML = '';
         
         let flippedCards = [];
@@ -209,21 +236,50 @@ class GameCaptcha {
         
         cards.forEach((emoji, index) => {
             const card = document.createElement('div');
-            card.className = 'memory-card';
+            card.style.cssText = `
+                aspect-ratio: 1;
+                background: white;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                cursor: pointer;
+                transition: transform 0.3s ease;
+                user-select: none;
+                min-height: 60px;
+            `;
             card.dataset.emoji = emoji;
             card.dataset.index = index;
             card.textContent = '❓';
+            
+            card.addEventListener('mouseenter', () => {
+                if (!card.classList.contains('flipped')) {
+                    card.style.transform = 'scale(1.05)';
+                }
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                if (!card.classList.contains('flipped')) {
+                    card.style.transform = 'scale(1)';
+                }
+            });
             
             card.addEventListener('click', () => {
                 if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
                     card.classList.add('flipped');
                     card.textContent = emoji;
+                    card.style.background = '#f0f8ff';
                     flippedCards.push(card);
                     
                     if (flippedCards.length === 2) {
                         setTimeout(() => {
                             if (flippedCards[0].dataset.emoji === flippedCards[1].dataset.emoji) {
-                                flippedCards.forEach(c => c.classList.add('matched'));
+                                flippedCards.forEach(c => {
+                                    c.classList.add('matched');
+                                    c.style.background = '#d4edda';
+                                    c.style.transform = 'scale(0.9)';
+                                });
                                 matchedPairs++;
                                 this.score = matchedPairs;
                                 this.updateScore();
@@ -235,6 +291,7 @@ class GameCaptcha {
                                 flippedCards.forEach(c => {
                                     c.classList.remove('flipped');
                                     c.textContent = '❓';
+                                    c.style.background = 'white';
                                 });
                             }
                             flippedCards = [];
@@ -247,16 +304,18 @@ class GameCaptcha {
         });
     }
     
-    // 3. COLOR MATCH GAME
+    // 3. COLOR MATCH GAME - Compact Version
     loadColorMatchGame() {
         this.gameTitle.textContent = '🎨 Color Match';
-        this.gameInstructions.textContent = 'Click the color that matches the target! Get 10 correct matches.';
-        this.target = 10;
+        this.gameInstructions.textContent = 'Click the matching color! Get 6 correct matches.';
+        this.target = 6;
         this.updateScore();
         
-        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
         
         const loadRound = () => {
+            if (this.isCompleted) return;
+            
             const targetColor = colors[Math.floor(Math.random() * colors.length)];
             const options = [targetColor];
             
@@ -271,19 +330,51 @@ class GameCaptcha {
             options.sort(() => Math.random() - 0.5);
             
             this.gameCanvas.className = 'game-canvas color-match-game';
+            this.gameCanvas.style.cssText = `
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 15px;
+                background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            `;
             this.gameCanvas.innerHTML = `
-                <div class="color-target" style="background-color: ${targetColor}"></div>
-                <div class="color-options">
+                <div style="
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    margin-bottom: 15px;
+                    border: 3px solid white;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                    background-color: ${targetColor};
+                "></div>
+                <div style="
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 10px;
+                ">
                     ${options.map(color => `
-                        <div class="color-option" 
-                             style="background-color: ${color}" 
-                             data-color="${color}">
-                        </div>
+                        <div style="
+                            width: 45px;
+                            height: 45px;
+                            border-radius: 50%;
+                            cursor: pointer;
+                            border: 2px solid white;
+                            transition: transform 0.3s ease;
+                            background-color: ${color};
+                        " data-color="${color}"></div>
                     `).join('')}
                 </div>
             `;
             
-            this.gameCanvas.querySelectorAll('.color-option').forEach(option => {
+            this.gameCanvas.querySelectorAll('[data-color]').forEach(option => {
+                option.addEventListener('mouseenter', () => {
+                    option.style.transform = 'scale(1.1)';
+                });
+                
+                option.addEventListener('mouseleave', () => {
+                    option.style.transform = 'scale(1)';
+                });
+                
                 option.addEventListener('click', () => {
                     if (option.dataset.color === targetColor) {
                         this.score++;
@@ -304,27 +395,57 @@ class GameCaptcha {
         loadRound();
     }
     
-    // 4. PUZZLE GAME
+    // 4. PUZZLE GAME - 2x2 Mini Puzzle
     loadPuzzleGame() {
         this.gameTitle.textContent = '🧩 Number Puzzle';
-        this.gameInstructions.textContent = 'Arrange numbers 1-8 in order! Complete the puzzle to verify.';
+        this.gameInstructions.textContent = 'Arrange numbers 1-3 in order! Complete the puzzle to verify.';
         this.target = 1;
         this.updateScore();
         
-        let numbers = [1, 2, 3, 4, 5, 6, 7, 8, ''];
+        let numbers = [1, 2, 3, ''];
         numbers.sort(() => Math.random() - 0.5);
         
         this.gameCanvas.className = 'game-canvas puzzle-game';
+        this.gameCanvas.style.cssText = `
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 40px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        `;
         
         const renderPuzzle = () => {
             this.gameCanvas.innerHTML = '';
             numbers.forEach((num, index) => {
                 const piece = document.createElement('div');
-                piece.className = `puzzle-piece ${num === '' ? 'empty' : ''}`;
+                piece.style.cssText = `
+                    aspect-ratio: 1;
+                    background: ${num === '' ? 'transparent' : 'white'};
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    cursor: ${num === '' ? 'default' : 'pointer'};
+                    transition: all 0.3s ease;
+                    border: 2px ${num === '' ? 'dashed rgba(255,255,255,0.5)' : 'solid transparent'};
+                    min-height: 80px;
+                `;
                 piece.textContent = num;
                 piece.dataset.index = index;
                 
                 if (num !== '') {
+                    piece.addEventListener('mouseenter', () => {
+                        piece.style.borderColor = '#fff';
+                        piece.style.transform = 'scale(1.05)';
+                    });
+                    
+                    piece.addEventListener('mouseleave', () => {
+                        piece.style.borderColor = 'transparent';
+                        piece.style.transform = 'scale(1)';
+                    });
+                    
                     piece.addEventListener('click', () => {
                         const emptyIndex = numbers.indexOf('');
                         const clickedIndex = index;
@@ -332,11 +453,11 @@ class GameCaptcha {
                         // Check if adjacent to empty space
                         const adjacentIndices = [
                             emptyIndex - 1, emptyIndex + 1, // horizontal
-                            emptyIndex - 3, emptyIndex + 3  // vertical
+                            emptyIndex - 2, emptyIndex + 2  // vertical
                         ].filter(i => {
-                            if (i < 0 || i > 8) return false;
-                            if (emptyIndex % 3 === 0 && i === emptyIndex - 1) return false;
-                            if (emptyIndex % 3 === 2 && i === emptyIndex + 1) return false;
+                            if (i < 0 || i > 3) return false;
+                            if (emptyIndex % 2 === 0 && i === emptyIndex - 1) return false;
+                            if (emptyIndex % 2 === 1 && i === emptyIndex + 1) return false;
                             return true;
                         });
                         
@@ -346,7 +467,7 @@ class GameCaptcha {
                             renderPuzzle();
                             
                             // Check if solved
-                            const solved = numbers.slice(0, 8).every((num, i) => num === i + 1);
+                            const solved = numbers.slice(0, 3).every((num, i) => num === i + 1);
                             if (solved) {
                                 this.score = 1;
                                 this.updateScore();
@@ -363,44 +484,62 @@ class GameCaptcha {
         renderPuzzle();
     }
     
-    // 5. SNAKE GAME
+    // 5. SNAKE GAME - Click Direction Control
     loadSnakeGame() {
         this.gameTitle.textContent = '🐍 Snake Mini';
-        this.gameInstructions.textContent = 'Use arrow keys or click to move! Eat 5 apples to verify.';
-        this.target = 5;
+        this.gameInstructions.textContent = 'Click LEFT/RIGHT/UP/DOWN sides to move! Eat 4 apples to verify.';
+        this.target = 4;
         this.updateScore();
         
         this.gameCanvas.className = 'game-canvas snake-game';
+        this.gameCanvas.style.cssText = `
+            position: relative;
+            background: #111;
+            border: 2px solid #333;
+        `;
         this.gameCanvas.innerHTML = '';
         
-        const boardSize = 20;
-        let snake = [{x: 10, y: 10}];
-        let food = {x: 15, y: 15};
-        let direction = {x: 0, y: 0};
+        const boardSize = 12; // Smaller board for 300px height
+        let snake = [{x: 6, y: 6}];
+        let food = {x: 9, y: 9};
+        let direction = {x: 1, y: 0};
         let gameRunning = true;
+        const cellSize = Math.min(20, (this.canvasWidth - 4) / boardSize);
         
         const drawGame = () => {
             this.gameCanvas.innerHTML = '';
             
             // Draw snake
-            snake.forEach(segment => {
+            snake.forEach((segment, index) => {
                 const snakeElement = document.createElement('div');
-                snakeElement.className = 'snake-pixel';
-                snakeElement.style.left = (segment.x * 15) + 'px';
-                snakeElement.style.top = (segment.y * 15) + 'px';
+                snakeElement.style.cssText = `
+                    position: absolute;
+                    width: ${cellSize}px;
+                    height: ${cellSize}px;
+                    background: ${index === 0 ? '#00ff00' : '#90EE90'};
+                    border-radius: 2px;
+                    left: ${segment.x * cellSize}px;
+                    top: ${segment.y * cellSize}px;
+                `;
                 this.gameCanvas.appendChild(snakeElement);
             });
             
             // Draw food
             const foodElement = document.createElement('div');
-            foodElement.className = 'food-pixel';
-            foodElement.style.left = (food.x * 15) + 'px';
-            foodElement.style.top = (food.y * 15) + 'px';
+            foodElement.style.cssText = `
+                position: absolute;
+                width: ${cellSize}px;
+                height: ${cellSize}px;
+                background: #ff0000;
+                border-radius: 50%;
+                left: ${food.x * cellSize}px;
+                top: ${food.y * cellSize}px;
+            `;
             this.gameCanvas.appendChild(foodElement);
         };
         
         const moveSnake = () => {
-            if (!gameRunning) return;
+            if (!gameRunning || this.isCompleted) return;
             
             const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
             
@@ -431,10 +570,12 @@ class GameCaptcha {
                 }
                 
                 // Generate new food
-                food = {
-                    x: Math.floor(Math.random() * boardSize),
-                    y: Math.floor(Math.random() * boardSize)
-                };
+                do {
+                    food = {
+                        x: Math.floor(Math.random() * boardSize),
+                        y: Math.floor(Math.random() * boardSize)
+                    };
+                } while (snake.some(segment => segment.x === food.x && segment.y === food.y));
             } else {
                 snake.pop();
             }
@@ -442,23 +583,9 @@ class GameCaptcha {
             drawGame();
         };
         
-        // Controls
-        const handleKeyPress = (e) => {
-            if (!gameRunning) return;
-            
-            switch(e.key) {
-                case 'ArrowUp': direction = {x: 0, y: -1}; break;
-                case 'ArrowDown': direction = {x: 0, y: 1}; break;
-                case 'ArrowLeft': direction = {x: -1, y: 0}; break;
-                case 'ArrowRight': direction = {x: 1, y: 0}; break;
-            }
-        };
-        
-        document.addEventListener('keydown', handleKeyPress);
-        
-        // Click controls
+        // Mouse-only directional controls
         this.gameCanvas.addEventListener('click', (e) => {
-            if (!gameRunning) return;
+            if (!gameRunning || this.isCompleted) return;
             
             const rect = this.gameCanvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -466,16 +593,29 @@ class GameCaptcha {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            if (Math.abs(x - centerX) > Math.abs(y - centerY)) {
-                direction = x > centerX ? {x: 1, y: 0} : {x: -1, y: 0};
+            // Determine direction based on click position
+            const deltaX = x - centerX;
+            const deltaY = y - centerY;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal movement
+                if (deltaX > 0 && direction.x !== -1) {
+                    direction = {x: 1, y: 0}; // Right
+                } else if (deltaX < 0 && direction.x !== 1) {
+                    direction = {x: -1, y: 0}; // Left
+                }
             } else {
-                direction = y > centerY ? {x: 0, y: 1} : {x: 0, y: -1};
+                // Vertical movement
+                if (deltaY > 0 && direction.y !== -1) {
+                    direction = {x: 0, y: 1}; // Down
+                } else if (deltaY < 0 && direction.y !== 1) {
+                    direction = {x: 0, y: -1}; // Up
+                }
             }
         });
         
         drawGame();
-        
-        this.gameInterval = setInterval(moveSnake, 200);
+        this.gameInterval = setInterval(moveSnake, 250);
     }
 }
 
