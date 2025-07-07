@@ -398,20 +398,32 @@ section {
 
 /* Contact Section */
 .contact {
-    background: white;
+    background-color: #f8f9fa;
+    padding: 80px 0;
+}
+
+.contact h2 {
     text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #333;
 }
 
 .contact p {
-    font-size: 1.2rem;
-    color: #5d6d7e;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #666;
     margin-bottom: 3rem;
 }
 
 .contact-form {
     max-width: 600px;
     margin: 0 auto;
-    text-align: left;
+    background: white;
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
@@ -421,76 +433,277 @@ section {
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #2c3e50;
+    font-weight: 600;
+    color: #333;
 }
 
 .form-group input,
 .form-group textarea {
     width: 100%;
     padding: 12px 16px;
-    border: 2px solid #e1e8ed;
+    border: 2px solid #e1e5e9;
     border-radius: 8px;
     font-size: 16px;
-    transition: border-color 0.3s ease;
     font-family: inherit;
+    transition: border-color 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #7f8c8d;
+    border-color: #667eea;
 }
 
-.captcha-group {
-    border: 2px solid #e1e8ed;
-    border-radius: 8px;
-    padding: 1rem;
+.form-group textarea {
+    resize: vertical;
+    font-family: inherit;
+}
+
+/* Game-based CAPTCHA Styles */
+.game-captcha-group {
+    background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+    border: 2px solid #667eea;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 25px 0;
+}
+
+.game-captcha-group label {
+    color: #667eea;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.game-captcha-container {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+}
+
+.game-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.game-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.game-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+.refresh-game-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.refresh-game-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.game-canvas {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    background: #f0f8ff;
+    border-bottom: 1px solid #e1e5e9;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.game-instructions {
+    padding: 15px 20px;
     background: #f8f9fa;
 }
 
-.captcha-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+.game-instructions p {
+    margin: 0 0 10px;
+    color: #666;
+    font-size: 0.9rem;
+    text-align: center;
 }
 
-.captcha-display {
-    background: #2c3e50;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 6px;
-    font-family: 'Courier New', monospace;
-    font-size: 18px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    min-width: 120px;
+.game-status {
     text-align: center;
+}
+
+.game-status span {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-failed {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Game Elements */
+.dino-game {
+    position: relative;
+    background: linear-gradient(to bottom, #87CEEB 0%, #98FB98 70%, #90EE90 100%);
+}
+
+.memory-game {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 20px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.memory-card {
+    aspect-ratio: 1;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
     user-select: none;
 }
 
-.refresh-btn {
-    background: #7f8c8d;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.3s ease;
+.memory-card:hover {
+    transform: scale(1.05);
 }
 
-.refresh-btn:hover {
-    background: #95a5a6;
+.memory-card.flipped {
+    background: #f0f8ff;
+}
+
+.memory-card.matched {
+    background: #d4edda;
+    transform: scale(0.9);
+}
+
+.color-match-game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+}
+
+.color-target {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    border: 4px solid white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.color-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.color-option {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid white;
+    transition: transform 0.3s ease;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.puzzle-game {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    padding: 20px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.puzzle-piece {
+    aspect-ratio: 1;
+    background: white;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.puzzle-piece:hover {
+    border-color: #fff;
+    transform: scale(1.05);
+}
+
+.puzzle-piece.empty {
+    background: transparent;
+    border: 2px dashed rgba(255,255,255,0.5);
+}
+
+.snake-game {
+    position: relative;
+    background: #000;
+    border: 2px solid #333;
+}
+
+.snake-pixel {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: #00ff00;
+    border-radius: 2px;
+}
+
+.food-pixel {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: #ff0000;
+    border-radius: 50%;
 }
 
 .submit-btn {
     width: 100%;
-    background: #7f8c8d;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 15px;
     border: none;
+    padding: 16px 24px;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
@@ -499,30 +712,33 @@ section {
     margin-top: 1rem;
 }
 
-.submit-btn:hover {
-    background: #95a5a6;
+.submit-btn:enabled:hover {
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .form-message {
+    text-align: center;
     margin-top: 1rem;
     padding: 1rem;
     border-radius: 8px;
-    text-align: center;
-    font-weight: 500;
-    display: none;
+    font-weight: 600;
 }
 
 .form-message.success {
     background: #d4edda;
     color: #155724;
-    border: 1px solid #c3e6cb;
 }
 
 .form-message.error {
     background: #f8d7da;
     color: #721c24;
-    border: 1px solid #f5c6cb;
 }
 
 /* Footer */

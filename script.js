@@ -1,43 +1,4 @@
-// Captcha System
-class CaptchaSystem {
-    constructor() {
-        this.currentCaptcha = '';
-        this.generateCaptcha();
-        this.bindEvents();
-    }
-
-    generateCaptcha() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let captcha = '';
-        
-        for (let i = 0; i < 6; i++) {
-            captcha += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        
-        this.currentCaptcha = captcha;
-        this.displayCaptcha();
-    }
-
-    displayCaptcha() {
-        const display = document.getElementById('captchaDisplay');
-        if (display) {
-            display.textContent = this.currentCaptcha;
-        }
-    }
-
-    bindEvents() {
-        const refreshBtn = document.getElementById('refreshCaptcha');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => {
-                this.generateCaptcha();
-            });
-        }
-    }
-
-    validateCaptcha(userInput) {
-        return userInput.toUpperCase() === this.currentCaptcha.toUpperCase();
-    }
-}
+// Game-based CAPTCHA System will be loaded dynamically
 
 // EmailJS Configuration - ⚠️ BU BİLGİLERİ DEĞİŞTİRMENİZ GEREK ⚠️
 const EMAILJS_CONFIG = {
@@ -51,9 +12,9 @@ class ContactForm {
     constructor() {
         this.form = document.getElementById('contactForm');
         this.messageDiv = document.getElementById('formMessage');
-        this.captcha = new CaptchaSystem();
         this.initEmailJS();
         this.bindEvents();
+        this.loadGameCaptcha();
     }
 
     initEmailJS() {
@@ -74,6 +35,16 @@ class ContactForm {
         }
     }
 
+    loadGameCaptcha() {
+        // Load game captcha script dynamically
+        if (!document.querySelector('script[src*="game-captcha.js"]')) {
+            const script = document.createElement('script');
+            script.src = 'scripts/game-captcha.js';
+            script.async = true;
+            document.head.appendChild(script);
+        }
+    }
+
     bindEvents() {
         if (this.form) {
             this.form.addEventListener('submit', (e) => {
@@ -87,10 +58,9 @@ class ContactForm {
         const formData = new FormData(this.form);
         const data = Object.fromEntries(formData);
 
-        // Validate captcha
-        if (!this.captcha.validateCaptcha(data.captcha)) {
-            this.showMessage('Invalid captcha. Please try again.', 'error');
-            this.captcha.generateCaptcha();
+        // Validate game captcha
+        if (data.game_verified !== 'true') {
+            this.showMessage('🎮 Please complete the mini-game first to verify you\'re human!', 'error');
             return;
         }
 
@@ -143,7 +113,11 @@ class ContactForm {
             console.log('Email gönderildi!', response.status, response.text);
             this.showMessage('Mesajınız için teşekkürler! En kısa sürede size geri döneceğiz.', 'success');
             this.form.reset();
-            this.captcha.generateCaptcha();
+            
+            // Reset game captcha
+            if (window.gameCaptcha) {
+                window.gameCaptcha.loadRandomGame();
+            }
             
         } catch (error) {
             console.error('Email gönderme hatası:', error);
@@ -513,6 +487,5 @@ window.RigidLogic = {
     ContactForm,
     Navigation,
     ScrollAnimations,
-    CaptchaSystem,
     copyEmail
 }; 

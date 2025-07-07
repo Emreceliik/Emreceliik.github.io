@@ -24,16 +24,32 @@
         <textarea id="message" name="message" rows="5" required></textarea>
     </div>
     
-    <div class="form-group captcha-group">
-        <label for="captcha">Verify you're human *</label>
-        <div class="captcha-container">
-            <div id="captchaDisplay" class="captcha-display"></div>
-            <button type="button" id="refreshCaptcha" class="refresh-btn">↻</button>
+    <!-- Game-based CAPTCHA -->
+    <div class="form-group game-captcha-group">
+        <label>🎮 Complete the mini-game to verify you're human *</label>
+        <div class="game-captcha-container">
+            <div class="game-header">
+                <h4 id="gameTitle">Loading Game...</h4>
+                <div class="game-controls">
+                    <span id="gameScore">Score: 0</span>
+                    <span id="gameTarget">Target: 10</span>
+                    <button type="button" id="refreshGame" class="refresh-game-btn">🎲 New Game</button>
+                </div>
+            </div>
+            <div id="gameCanvas" class="game-canvas"></div>
+            <div class="game-instructions">
+                <p id="gameInstructions">Loading instructions...</p>
+                <div class="game-status">
+                    <span id="gameStatus" class="status-pending">⚡ Complete the challenge!</span>
+                </div>
+            </div>
         </div>
-        <input type="text" id="captcha" name="captcha" placeholder="Enter the code above" required>
+        <input type="hidden" id="gameVerified" name="game_verified" value="false">
     </div>
     
-    <button type="submit" class="submit-btn">Send Message</button>
+    <button type="submit" class="submit-btn" id="submitBtn" disabled>
+        <span id="submitText">🎮 Complete Game First</span>
+    </button>
 </form>
 
 <div id="formMessage" class="form-message"></div> 
