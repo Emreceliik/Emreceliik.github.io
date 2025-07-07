@@ -84,8 +84,21 @@ class GameCaptcha {
             clearInterval(this.gameInterval);
         }
         
+        // Clean up reaction game event listener
+        if (this.reactionClickHandler) {
+            this.gameCanvas.removeEventListener('click', this.reactionClickHandler);
+            this.reactionClickHandler = null;
+        }
+        
+        // Clear any timeouts (especially for reaction game)
+        if (this.currentTimeout) {
+            clearTimeout(this.currentTimeout);
+            this.currentTimeout = null;
+        }
+        
         this.gameCanvas.innerHTML = '';
         this.gameCanvas.className = 'game-canvas';
+        this.gameCanvas.style.cssText = ''; // Reset any inline styles
         
         // Update canvas dimensions
         this.canvasWidth = this.gameCanvas.offsetWidth;
@@ -243,8 +256,8 @@ class GameCaptcha {
         this.gameCanvas.style.cssText = `
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            padding: 20px;
+            gap: 15px;
+            padding: 25px;
             background: linear-gradient(45deg, #667eea, #764ba2);
         `;
         this.gameCanvas.innerHTML = '';
@@ -873,8 +886,8 @@ class GameCaptcha {
     // 7. REACTION TEST GAME - Click when the signal appears
     loadReactionGame() {
         this.gameTitle.textContent = '⚡ Reaction Test';
-        this.gameInstructions.textContent = 'Click as soon as you see the GREEN signal! Complete 3 quick reactions.';
-        this.target = 3;
+        this.gameInstructions.textContent = 'Click as soon as you see the GREEN signal! Complete 2 quick reactions.';
+        this.target = 2;
         this.updateScore();
         
         this.gameCanvas.className = 'game-canvas reaction-game';
@@ -889,9 +902,9 @@ class GameCaptcha {
         `;
         this.gameCanvas.innerHTML = '';
         
-        let waitingForReaction = false;
-        let reactionStartTime = 0;
-        let currentTimeout = null;
+                 let waitingForReaction = false;
+         let reactionStartTime = 0;
+         this.currentTimeout = null;
         
         const showInstructions = () => {
             this.gameCanvas.innerHTML = `
@@ -996,34 +1009,39 @@ class GameCaptcha {
             
             // Random delay between 1-4 seconds
             const delay = Math.random() * 3000 + 1000;
-            currentTimeout = setTimeout(() => {
+            this.currentTimeout = setTimeout(() => {
                 if (!this.isCompleted) {
                     showGreenSignal();
                 }
             }, delay);
         };
         
-        this.gameCanvas.addEventListener('click', () => {
+        const reactionClickHandler = () => {
             if (this.isCompleted) return;
             
             if (waitingForReaction) {
                 // Calculate reaction time
                 const reactionTime = Date.now() - reactionStartTime;
                 waitingForReaction = false;
-                if (currentTimeout) {
-                    clearTimeout(currentTimeout);
-                    currentTimeout = null;
+                if (this.currentTimeout) {
+                    clearTimeout(this.currentTimeout);
+                    this.currentTimeout = null;
                 }
                 showReactionResult(reactionTime);
             } else {
                 // Clicked too early
-                if (currentTimeout) {
-                    clearTimeout(currentTimeout);
-                    currentTimeout = null;
+                if (this.currentTimeout) {
+                    clearTimeout(this.currentTimeout);
+                    this.currentTimeout = null;
                 }
                 showTooEarly();
             }
-        });
+        };
+        
+        this.gameCanvas.addEventListener('click', reactionClickHandler);
+        
+        // Store handler for cleanup
+        this.reactionClickHandler = reactionClickHandler;
         
         // Start first round
         startNewRound();
