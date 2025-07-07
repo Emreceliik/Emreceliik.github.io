@@ -6,7 +6,7 @@
 
 class GameCaptcha {
     constructor() {
-        this.games = ['timing', 'memory', 'colorMatch', 'math', 'target'];
+        this.games = ['timing', 'memory', 'colorMatch', 'math', 'target', 'balloon', 'reaction'];
         this.currentGame = null;
         this.score = 0;
         this.target = 10;
@@ -61,6 +61,12 @@ class GameCaptcha {
                 break;
             case 'target':
                 this.loadTargetGame();
+                break;
+            case 'balloon':
+                this.loadBalloonGame();
+                break;
+            case 'reaction':
+                this.loadReactionGame();
                 break;
         }
     }
@@ -188,10 +194,12 @@ class GameCaptcha {
             if (this.isCompleted) return;
             
             const targetLeft = position;
+            const targetRight = position + 40; // target width
             const zoneLeft = this.canvasWidth * 0.4;
             const zoneRight = this.canvasWidth * 0.6;
             
-            if (targetLeft >= zoneLeft && targetLeft <= zoneRight - 40) {
+            // More forgiving hit detection - if any part of target overlaps with zone
+            if (targetRight >= zoneLeft && targetLeft <= zoneRight) {
                 // Perfect hit!
                 this.score++;
                 this.updateScore();
@@ -249,15 +257,15 @@ class GameCaptcha {
             card.style.cssText = `
                 aspect-ratio: 1;
                 background: white;
-                border-radius: 6px;
+                border-radius: 4px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 1.2rem;
+                font-size: 1rem;
                 cursor: pointer;
                 transition: transform 0.3s ease;
                 user-select: none;
-                min-height: 45px;
+                min-height: 35px;
             `;
             card.dataset.emoji = emoji;
             card.dataset.index = index;
@@ -731,6 +739,294 @@ class GameCaptcha {
         
         // Create first target immediately
         createTarget();
+    }
+    
+    // 6. BALLOON POP GAME - Pop the floating balloons
+    loadBalloonGame() {
+        this.gameTitle.textContent = '🎈 Balloon Pop';
+        this.gameInstructions.textContent = 'Pop the floating balloons! Pop 5 balloons to verify.';
+        this.target = 5;
+        this.updateScore();
+        
+        this.gameCanvas.className = 'game-canvas balloon-game';
+        this.gameCanvas.style.cssText = `
+            position: relative;
+            background: linear-gradient(to bottom, #87CEEB, #98D8E8);
+            border: 2px solid #4682B4;
+            overflow: hidden;
+        `;
+        this.gameCanvas.innerHTML = '';
+        
+        let balloons = [];
+        const balloonColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA726', '#AB47BC', '#66BB6A'];
+        
+        const createBalloon = () => {
+            if (this.isCompleted || balloons.length >= 4) return;
+            
+            const balloon = document.createElement('div');
+            const size = Math.random() * 30 + 40; // 40-70px
+            const color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+            const startX = Math.random() * (this.canvasWidth - size);
+            const startY = this.canvasHeight + size;
+            
+            balloon.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size * 1.2}px;
+                left: ${startX}px;
+                top: ${startY}px;
+                background: radial-gradient(ellipse 60% 80% at center 20%, ${color}, ${color}DD);
+                border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                box-shadow: inset -10px -10px 0 rgba(0,0,0,0.1);
+                font-size: ${size * 0.6}px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+            `;
+            balloon.textContent = '🎈';
+            
+            // Floating animation
+            let floatY = startY;
+            const floatSpeed = Math.random() * 2 + 1; // 1-3px per frame
+            const wiggle = Math.random() * 0.02 + 0.01; // Small horizontal movement
+            let time = 0;
+            
+            balloon.addEventListener('mouseenter', () => {
+                balloon.style.transform = 'scale(1.1)';
+            });
+            
+            balloon.addEventListener('mouseleave', () => {
+                balloon.style.transform = 'scale(1)';
+            });
+            
+            balloon.addEventListener('click', () => {
+                // Pop effect
+                balloon.style.background = '#FFD700';
+                balloon.textContent = '💥';
+                balloon.style.transform = 'scale(1.5)';
+                balloon.style.transition = 'all 0.3s ease';
+                
+                this.score++;
+                this.updateScore();
+                
+                setTimeout(() => {
+                    if (balloon.parentNode) {
+                        balloon.remove();
+                    }
+                    const index = balloons.indexOf(balloon);
+                    if (index > -1) {
+                        balloons.splice(index, 1);
+                    }
+                }, 300);
+                
+                if (this.score >= this.target) {
+                    this.completeGame();
+                    return;
+                }
+            });
+            
+            this.gameCanvas.appendChild(balloon);
+            balloons.push(balloon);
+            
+            const animateBalloon = () => {
+                if (this.isCompleted || !balloon.parentNode) return;
+                
+                floatY -= floatSpeed;
+                time += 0.1;
+                const wiggleX = startX + Math.sin(time) * 20;
+                
+                balloon.style.top = floatY + 'px';
+                balloon.style.left = wiggleX + 'px';
+                
+                // Remove if balloon floated away
+                if (floatY < -size) {
+                    if (balloon.parentNode) {
+                        balloon.remove();
+                    }
+                    const index = balloons.indexOf(balloon);
+                    if (index > -1) {
+                        balloons.splice(index, 1);
+                    }
+                    return;
+                }
+                
+                requestAnimationFrame(animateBalloon);
+            };
+            
+            animateBalloon();
+        };
+        
+        // Create balloons at intervals
+        this.gameInterval = setInterval(() => {
+            if (!this.isCompleted) {
+                createBalloon();
+            }
+        }, 1500);
+        
+        // Create first balloon immediately
+        createBalloon();
+    }
+    
+    // 7. REACTION TEST GAME - Click when the signal appears
+    loadReactionGame() {
+        this.gameTitle.textContent = '⚡ Reaction Test';
+        this.gameInstructions.textContent = 'Click as soon as you see the GREEN signal! Complete 3 quick reactions.';
+        this.target = 3;
+        this.updateScore();
+        
+        this.gameCanvas.className = 'game-canvas reaction-game';
+        this.gameCanvas.style.cssText = `
+            position: relative;
+            background: #2c3e50;
+            border: 2px solid #34495e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        `;
+        this.gameCanvas.innerHTML = '';
+        
+        let waitingForReaction = false;
+        let reactionStartTime = 0;
+        let currentTimeout = null;
+        
+        const showInstructions = () => {
+            this.gameCanvas.innerHTML = `
+                <div style="
+                    text-align: center;
+                    color: white;
+                    font-size: 1.2rem;
+                    padding: 20px;
+                    line-height: 1.5;
+                ">
+                    <div style="font-size: 2rem; margin-bottom: 15px;">⏳</div>
+                    <div>Wait for the GREEN signal...</div>
+                    <div style="font-size: 0.9rem; margin-top: 10px; color: #bdc3c7;">
+                        Click as fast as you can when it appears!
+                    </div>
+                </div>
+            `;
+        };
+        
+        const showGreenSignal = () => {
+            this.gameCanvas.style.background = 'linear-gradient(45deg, #27ae60, #2ecc71)';
+            this.gameCanvas.innerHTML = `
+                <div style="
+                    text-align: center;
+                    color: white;
+                    font-size: 2.5rem;
+                    font-weight: bold;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+                ">
+                    <div style="font-size: 3rem;">🟢</div>
+                    <div>CLICK NOW!</div>
+                </div>
+            `;
+            waitingForReaction = true;
+            reactionStartTime = Date.now();
+        };
+        
+        const showTooEarly = () => {
+            this.gameCanvas.style.background = 'linear-gradient(45deg, #e74c3c, #c0392b)';
+            this.gameCanvas.innerHTML = `
+                <div style="
+                    text-align: center;
+                    color: white;
+                    font-size: 1.5rem;
+                    padding: 20px;
+                ">
+                    <div style="font-size: 2.5rem; margin-bottom: 15px;">❌</div>
+                    <div>Too Early!</div>
+                    <div style="font-size: 0.9rem; margin-top: 10px;">
+                        Wait for the green signal
+                    </div>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                if (!this.isCompleted) {
+                    startNewRound();
+                }
+            }, 1500);
+        };
+        
+        const showReactionResult = (reactionTime) => {
+            this.gameCanvas.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
+            this.gameCanvas.innerHTML = `
+                <div style="
+                    text-align: center;
+                    color: white;
+                    font-size: 1.3rem;
+                    padding: 20px;
+                ">
+                    <div style="font-size: 2rem; margin-bottom: 15px;">⚡</div>
+                    <div>Reaction Time:</div>
+                    <div style="font-size: 2rem; font-weight: bold; color: #f1c40f;">
+                        ${reactionTime}ms
+                    </div>
+                    <div style="font-size: 0.9rem; margin-top: 10px;">
+                        ${reactionTime < 300 ? 'Lightning Fast! ⚡' : 
+                          reactionTime < 500 ? 'Great Reflexes! 👍' : 
+                          reactionTime < 700 ? 'Good Job! 😊' : 'Keep Practicing! 💪'}
+                    </div>
+                </div>
+            `;
+            
+            this.score++;
+            this.updateScore();
+            
+            setTimeout(() => {
+                if (this.score >= this.target) {
+                    this.completeGame();
+                } else if (!this.isCompleted) {
+                    startNewRound();
+                }
+            }, 2000);
+        };
+        
+        const startNewRound = () => {
+            if (this.isCompleted) return;
+            
+            waitingForReaction = false;
+            this.gameCanvas.style.background = '#2c3e50';
+            showInstructions();
+            
+            // Random delay between 1-4 seconds
+            const delay = Math.random() * 3000 + 1000;
+            currentTimeout = setTimeout(() => {
+                if (!this.isCompleted) {
+                    showGreenSignal();
+                }
+            }, delay);
+        };
+        
+        this.gameCanvas.addEventListener('click', () => {
+            if (this.isCompleted) return;
+            
+            if (waitingForReaction) {
+                // Calculate reaction time
+                const reactionTime = Date.now() - reactionStartTime;
+                waitingForReaction = false;
+                if (currentTimeout) {
+                    clearTimeout(currentTimeout);
+                    currentTimeout = null;
+                }
+                showReactionResult(reactionTime);
+            } else {
+                // Clicked too early
+                if (currentTimeout) {
+                    clearTimeout(currentTimeout);
+                    currentTimeout = null;
+                }
+                showTooEarly();
+            }
+        });
+        
+        // Start first round
+        startNewRound();
     }
 }
 
