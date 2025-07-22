@@ -455,20 +455,20 @@ class PerformanceOptimizer {
 document.addEventListener('DOMContentLoaded', () => {
     // Wait a bit for modular components to load
     setTimeout(() => {
-        // Initialize all components
-        new ContactForm();
-        new Navigation();
-        new ScrollAnimations();
-        new MobileNavigation();
-        new PerformanceOptimizer();
+    // Initialize all components
+    new ContactForm();
+    new Navigation();
+    new ScrollAnimations();
+    new MobileNavigation();
+    new PerformanceOptimizer();
 
-        // Add loading animation
-        document.body.classList.add('loaded');
+    // Add loading animation
+    document.body.classList.add('loaded');
 
-        // Console message for developers
-        console.log('%cRigid Logic Website', 'color: #7f8c8d; font-size: 24px; font-weight: bold;');
-        console.log('%cBuilt with modern web technologies', 'color: #5d6d7e; font-size: 14px;');
-        console.log('%cFor inquiries: info@rigidlgc.com', 'color: #5d6d7e; font-size: 14px;');
+    // Console message for developers
+    console.log('%cRigid Logic Website', 'color: #7f8c8d; font-size: 24px; font-weight: bold;');
+    console.log('%cBuilt with modern web technologies', 'color: #5d6d7e; font-size: 14px;');
+    console.log('%cFor inquiries: info@rigidlgc.com', 'color: #5d6d7e; font-size: 14px;');
     }, 1000); // Wait 1 second for components to load
 });
 
