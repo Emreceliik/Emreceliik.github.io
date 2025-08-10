@@ -11,6 +11,12 @@
     <link rel="apple-touch-icon" href="logo.jpg">
 
     <link rel="stylesheet" href="styles.css">
+    <style>
+      /* App card specific tweaks so logos look crisp and not cropped */
+      .app-card .service-image { background: #fff; }
+      .app-card .app-logo { width: 100%; height: 220px; object-fit: contain; border-radius: 8px; background: #fff; }
+      @media (min-width: 992px) { .app-card .app-logo { height: 260px; } }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script type="application/ld+json">
@@ -38,9 +44,9 @@
             <p>Thoughtfully crafted, research-driven applications that blend safety, utility, and immersive technology.</p>
 
             <div class="services-grid">
-                <a href="components/quakelyWeb/index.html" target="_blank" rel="noopener noreferrer" class="service-card" style="text-decoration: none; color: inherit;">
+                <a href="quakely.html" target="_blank" rel="noopener noreferrer" class="service-card app-card" style="text-decoration: none; color: inherit;">
                     <div class="service-image">
-                        <img src="components/quakelyWeb/QuakelyLogo.jpg" alt="Quakely earthquake safety app logo" class="service-img" loading="lazy">
+                        <img src="components/quakelyWeb/QuakelyLogo.jpg" alt="Quakely earthquake safety app logo" class="app-logo" loading="lazy">
                     </div>
                     <h3>Quakely</h3>
                     <p>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quakely - Rigid Logic</title>
+  <meta name="description" content="Quakely helps you identify the safest spot in your home during an earthquake with clear, practical guidance.">
+  <link rel="icon" type="image/x-icon" href="logo.jpg">
+  <link rel="apple-touch-icon" href="logo.jpg">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .app-header { text-align: center; padding: 24px 16px 8px; }
+    .app-header h1 { margin: 0 0 8px 0; }
+    .app-frame-wrapper { padding: 0 16px 24px; }
+    .app-frame { width: 100%; height: 80vh; border: 0; border-radius: 12px; background: #000; }
+    @media (min-width: 992px) { .app-frame { height: 82vh; } }
+  </style>
+</head>
+<body>
+  <div id="navbar-container"></div>
+
+  <section class="app-header">
+    <h1>Quakely</h1>
+    <p>Your earthquake safety companion by Rigid Logic.</p>
+  </section>
+
+  <section class="app-frame-wrapper">
+    <iframe class="app-frame" src="components/quakelyWeb/index.html" title="Quakely Web App" allowfullscreen loading="eager"></iframe>
+  </section>
+
+  <div id="footer-container"></div>
+
+  <script src="components/component-loader.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+
+
