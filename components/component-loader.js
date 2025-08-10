@@ -46,6 +46,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 500);
     }
+
+    // Load Game Development section if container exists
+    const gameDevContainer = document.getElementById('game-development-container');
+    if (gameDevContainer) {
+        loadComponent('game-development', 'game-development-container');
+    }
 });
 
 // Function to load components dynamically
