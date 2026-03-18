@@ -240,6 +240,15 @@ body {
     transform: translateY(-2px);
 }
 
+.erp-login-btn {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+}
+
+.erp-login-btn:hover {
+    background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+}
+
 /* Image Styles */
 .hero-img, .about-img, .careers-img {
     width: 100%;
