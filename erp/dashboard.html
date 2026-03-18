@@ -19,33 +19,33 @@
             </div>
 
             <nav class="sidebar-nav">
-                <div class="nav-label">Ana Menü</div>
+                <div class="nav-label">Main Menu</div>
                 <a class="nav-item active" data-section="dashboard" onclick="navigateTo('dashboard')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
-                    <span>Ana Sayfa</span>
+                    <span>Dashboard</span>
                 </a>
                 <a class="nav-item" data-section="calendar" onclick="navigateTo('calendar')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    <span>Takvim</span>
+                    <span>Calendar</span>
                 </a>
                 <a class="nav-item" data-section="tasks" onclick="navigateTo('tasks')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                    <span>Görevler</span>
+                    <span>Tasks</span>
                 </a>
                 <a class="nav-item" data-section="messages" onclick="navigateTo('messages')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                    <span>Mesajlar</span>
+                    <span>Messages</span>
                     <span class="nav-badge" id="unread-badge" style="display:none">0</span>
                 </a>
 
-                <div class="nav-label admin-only" style="display:none">Yönetim</div>
+                <div class="nav-label admin-only" style="display:none">Management</div>
                 <a class="nav-item admin-only" data-section="users" onclick="navigateTo('users')" style="display:none">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    <span>Kullanıcılar</span>
+                    <span>Users</span>
                 </a>
                 <a class="nav-item admin-only" data-section="approvals" onclick="navigateTo('approvals')" style="display:none">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span>Onaylar</span>
+                    <span>Approvals</span>
                     <span class="nav-badge admin-only" id="approval-badge" style="display:none">0</span>
                 </a>
             </nav>
@@ -54,10 +54,10 @@
                 <div class="user-card">
                     <div class="user-avatar" id="user-avatar">A</div>
                     <div class="user-card-info">
-                        <div class="user-card-name" id="user-display-name">Yükleniyor...</div>
+                        <div class="user-card-name" id="user-display-name">Loading...</div>
                         <div class="user-card-role" id="user-role">-</div>
                     </div>
-                    <button class="logout-btn" onclick="logout()" title="Çıkış Yap">
+                    <button class="logout-btn" onclick="logout()" id="t-logout-btn" title="Logout">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                     </button>
                 </div>
@@ -74,6 +74,7 @@
                     <h1 id="page-title">Ana Sayfa</h1>
                 </div>
                 <div class="header-right">
+                    <div id="header-lang-selector" style="display:flex;gap:4px"></div>
                     <span style="font-size:13px;color:var(--text-muted)" id="current-date"></span>
                 </div>
             </header>
@@ -83,9 +84,9 @@
                 <div id="section-dashboard" class="content-section">
                     <div class="stats-grid" id="stats-grid"></div>
                     <div class="card">
-                        <h3>Son Aktiviteler</h3>
+                        <h3 id="t-recent-activity">Recent Activity</h3>
                         <div id="recent-activity">
-                            <div class="empty-state"><p>Henüz aktivite yok</p></div>
+                            <div class="empty-state"><p>No activity yet</p></div>
                         </div>
                     </div>
                 </div>
@@ -98,7 +99,7 @@
                         </div>
                         <h3 id="calendar-month-year"></h3>
                         <div style="display:flex;gap:8px;align-items:center">
-                            <button class="btn-primary btn-sm" onclick="openAddEventModal()">+ Etkinlik Ekle</button>
+                            <button class="btn-primary btn-sm" id="t-add-event-btn" onclick="openAddEventModal()">+ Add Event</button>
                             <div class="calendar-nav">
                                 <button onclick="changeMonth(1)">&#8250;</button>
                             </div>
@@ -110,14 +111,14 @@
                 <!-- ========== TASKS ========== -->
                 <div id="section-tasks" class="content-section" style="display:none">
                     <div class="section-header">
-                        <h3>Görevler</h3>
-                        <button class="btn-primary admin-only" style="display:none" onclick="openTaskModal()">+ Yeni Görev</button>
+                        <h3 id="t-tasks-title">Tasks</h3>
+                        <button class="btn-primary admin-only" style="display:none" id="t-new-task-btn" onclick="openTaskModal()">+ New Task</button>
                     </div>
                     <div class="tasks-filters">
-                        <button class="filter-btn active" onclick="filterTasks('all', this)">Tümü</button>
-                        <button class="filter-btn" onclick="filterTasks('pending', this)">Bekleyen</button>
-                        <button class="filter-btn" onclick="filterTasks('in_progress', this)">Devam Eden</button>
-                        <button class="filter-btn" onclick="filterTasks('completed', this)">Tamamlanan</button>
+                        <button class="filter-btn active" onclick="filterTasks('all', this)" id="t-filter-all">All</button>
+                        <button class="filter-btn" onclick="filterTasks('pending', this)" id="t-filter-pending">Pending</button>
+                        <button class="filter-btn" onclick="filterTasks('in_progress', this)" id="t-filter-progress">In Progress</button>
+                        <button class="filter-btn" onclick="filterTasks('completed', this)" id="t-filter-completed">Completed</button>
                     </div>
                     <div id="tasks-list"></div>
                 </div>
@@ -126,11 +127,11 @@
                 <div id="section-messages" class="content-section" style="display:none">
                     <div class="messages-container">
                         <div class="conversations-list">
-                            <div class="conversations-header">Sohbetler</div>
+                            <div class="conversations-header" id="t-chats-title">Chats</div>
                             <div id="conversations-list"></div>
                         </div>
                         <div class="chat-area" id="chat-area">
-                            <div class="chat-placeholder">Mesajlaşmak için bir kullanıcı seçin</div>
+                            <div class="chat-placeholder" id="t-msg-placeholder">Select a user to chat</div>
                         </div>
                     </div>
                 </div>
@@ -138,18 +139,18 @@
                 <!-- ========== USERS (Admin) ========== -->
                 <div id="section-users" class="content-section" style="display:none">
                     <div class="section-header">
-                        <h3>Kullanıcılar</h3>
-                        <button class="btn-primary" onclick="openCreateUserModal()">+ Yeni Kullanıcı</button>
+                        <h3 id="t-users-title">Users</h3>
+                        <button class="btn-primary" id="t-new-user-btn" onclick="openCreateUserModal()">+ New User</button>
                     </div>
                     <div class="card" style="overflow-x:auto">
                         <table class="users-table">
                             <thead>
                                 <tr>
-                                    <th>Kullanıcı</th>
-                                    <th>Kullanıcı Adı</th>
-                                    <th>Rol</th>
-                                    <th>Kayıt Tarihi</th>
-                                    <th>İşlemler</th>
+                                    <th id="t-col-user">User</th>
+                                    <th id="t-col-username">Username</th>
+                                    <th id="t-col-role">Role</th>
+                                    <th id="t-col-date">Reg. Date</th>
+                                    <th id="t-col-actions">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="users-table-body"></tbody>
@@ -160,7 +161,7 @@
                 <!-- ========== APPROVALS (Admin) ========== -->
                 <div id="section-approvals" class="content-section" style="display:none">
                     <div class="section-header">
-                        <h3>Onay Bekleyen Etkinlikler</h3>
+                        <h3 id="t-approvals-title">Pending Events</h3>
                     </div>
                     <div id="approvals-list"></div>
                 </div>
@@ -179,7 +180,8 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Language & Firebase SDK -->
+    <script src="lang.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>

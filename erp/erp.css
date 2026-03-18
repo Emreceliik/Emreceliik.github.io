@@ -1158,6 +1158,28 @@ body {
 
 /* =================== SCROLLBAR =================== */
 
+.header-lang-btn {
+    background: var(--content-bg);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.header-lang-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.header-lang-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
 ::-webkit-scrollbar {
     width: 6px;
 }

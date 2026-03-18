@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rigid Logic ERP - Giriş</title>
+    <title>Rigid Logic ERP - Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -56,6 +56,39 @@
             border-radius: 20px;
             padding: 48px 40px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .lang-selector {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 28px;
+        }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: #e2e8f0;
+        }
+
+        .lang-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+            color: #93c5fd;
         }
 
         .login-header {
@@ -133,9 +166,7 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
-        .form-group input::placeholder {
-            color: #475569;
-        }
+        .form-group input::placeholder { color: #475569; }
 
         .login-btn {
             width: 100%;
@@ -152,20 +183,9 @@
             margin-top: 8px;
         }
 
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35);
-        }
-
-        .login-btn:active {
-            transform: translateY(0);
-        }
-
-        .login-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.35); }
+        .login-btn:active { transform: translateY(0); }
+        .login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         .error-message {
             background: rgba(239, 68, 68, 0.1);
@@ -191,9 +211,7 @@
             margin-right: 8px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .footer-text {
             text-align: center;
@@ -210,45 +228,74 @@
 
     <div class="login-container">
         <div class="login-card">
+            <div class="lang-selector" id="lang-selector"></div>
+
             <div class="login-header">
                 <div class="login-logo">RL</div>
-                <h1>Rigid Logic ERP</h1>
-                <p>Hesabınıza giriş yapın</p>
+                <h1 id="t-title">Rigid Logic ERP</h1>
+                <p id="t-subtitle"></p>
             </div>
 
             <div id="error-message" class="error-message"></div>
 
             <form id="login-form" onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label for="username">Kullanıcı Adı</label>
+                    <label for="username" id="t-username-label"></label>
                     <div class="input-wrapper">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
-                        <input type="text" id="username" placeholder="Kullanıcı adınızı girin" required autocomplete="username">
+                        <input type="text" id="username" required autocomplete="username">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password">Şifre</label>
+                    <label for="password" id="t-password-label"></label>
                     <div class="input-wrapper">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                         </svg>
-                        <input type="password" id="password" placeholder="Şifrenizi girin" required autocomplete="current-password">
+                        <input type="password" id="password" required autocomplete="current-password">
                     </div>
                 </div>
-                <button type="submit" class="login-btn" id="login-btn">Giriş Yap</button>
+                <button type="submit" class="login-btn" id="login-btn"></button>
             </form>
 
-            <div class="footer-text">&copy; 2026 Rigid Logic. Tüm hakları saklıdır.</div>
+            <div class="footer-text" id="t-footer"></div>
         </div>
     </div>
 
+    <script src="lang.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script>
+        function renderLangSelector() {
+            const container = document.getElementById('lang-selector');
+            container.innerHTML = '';
+            Object.keys(LANGS).forEach(code => {
+                const btn = document.createElement('button');
+                btn.className = 'lang-btn' + (code === currentLang ? ' active' : '');
+                btn.innerHTML = `${LANGS[code].flag} ${LANGS[code].name}`;
+                btn.onclick = () => { setLang(code); applyLoginLang(); renderLangSelector(); };
+                container.appendChild(btn);
+            });
+        }
+
+        function applyLoginLang() {
+            document.getElementById('t-title').textContent = T('login_title');
+            document.getElementById('t-subtitle').textContent = T('login_subtitle');
+            document.getElementById('t-username-label').textContent = T('username_label');
+            document.getElementById('username').placeholder = T('username_placeholder');
+            document.getElementById('t-password-label').textContent = T('password_label');
+            document.getElementById('password').placeholder = T('password_placeholder');
+            document.getElementById('login-btn').textContent = T('login_btn');
+            document.getElementById('t-footer').innerHTML = T('footer');
+        }
+
+        renderLangSelector();
+        applyLoginLang();
+
         let isSettingUpAdmin = false;
 
         auth.onAuthStateChanged(user => {
@@ -263,7 +310,6 @@
                 try { secondaryApp = firebase.app('AdminSetup'); }
                 catch (e) { secondaryApp = firebase.initializeApp(firebaseConfig, 'AdminSetup'); }
                 const setupAuth = secondaryApp.auth();
-
                 try {
                     await setupAuth.signInWithEmailAndPassword(adminEmail, ADMIN_PASSWORD);
                     await setupAuth.signOut();
@@ -271,20 +317,14 @@
                     if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
                         const cred = await setupAuth.createUserWithEmailAndPassword(adminEmail, ADMIN_PASSWORD);
                         await db.collection('users').doc(cred.user.uid).set({
-                            username: ADMIN_USERNAME,
-                            displayName: 'Admin',
-                            role: 'admin',
-                            email: adminEmail,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            username: ADMIN_USERNAME, displayName: 'Admin', role: 'admin',
+                            email: adminEmail, createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
                         await setupAuth.signOut();
                     }
                 }
-            } catch (err) {
-                console.error('Admin kurulumu:', err);
-            } finally {
-                isSettingUpAdmin = false;
-            }
+            } catch (err) { console.error('Admin setup:', err); }
+            finally { isSettingUpAdmin = false; }
         }
 
         ensureAdminExists();
@@ -302,35 +342,29 @@
         async function handleLogin(e) {
             e.preventDefault();
             hideError();
-
             const btn = document.getElementById('login-btn');
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
 
-            if (!username || !password) {
-                showError('Lütfen tüm alanları doldurun.');
-                return;
-            }
+            if (!username || !password) { showError(T('err_empty')); return; }
 
             btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner"></span>Giriş yapılıyor...';
+            btn.innerHTML = '<span class="loading-spinner"></span>' + T('logging_in');
 
             try {
-                const email = usernameToEmail(username);
-                await auth.signInWithEmailAndPassword(email, password);
+                await auth.signInWithEmailAndPassword(usernameToEmail(username), password);
                 window.location.href = 'dashboard.html';
             } catch (err) {
-                console.error(err);
                 if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
-                    showError('Kullanıcı adı veya şifre hatalı.');
+                    showError(T('err_invalid'));
                 } else if (err.code === 'auth/too-many-requests') {
-                    showError('Çok fazla deneme. Lütfen biraz bekleyin.');
+                    showError(T('err_too_many'));
                 } else {
-                    showError('Giriş yapılamadı. Lütfen tekrar deneyin.');
+                    showError(T('err_generic'));
                 }
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Giriş Yap';
+                btn.textContent = T('login_btn');
             }
         }
     </script>
