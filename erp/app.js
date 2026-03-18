@@ -278,12 +278,18 @@ async function loadCalendarEvents(year, month) {
             const ev = doc.data();
             const el = document.getElementById(`events-${ev.date}`);
             if (!el) return;
-            if (currentUserProfile.role !== 'admin' && ev.status !== 'approved' && ev.createdBy !== currentUser.uid) return;
+
+            if (ev.status === 'rejected') return;
+            if (ev.status === 'pending' && currentUserProfile.role !== 'admin' && ev.createdBy !== currentUser.uid) return;
 
             const div = document.createElement('div');
             div.className = `event-dot ${ev.status}`;
             div.textContent = ev.title;
             div.title = `${ev.title} — ${approvalText(ev.status)}`;
+            if (currentUserProfile.role === 'admin') {
+                div.style.cursor = 'pointer';
+                div.onclick = (e) => { e.stopPropagation(); openEventDetailModal(doc.id, ev); };
+            }
             el.appendChild(div);
         });
     } catch (e) { console.error(e); }
@@ -342,6 +348,74 @@ async function submitEvent(e) {
     }
 }
 
+function openEventDetailModal(eventId, ev) {
+    const isAdmin = currentUserProfile.role === 'admin';
+    openModal('Etkinlik Detayı', `
+        <form onsubmit="updateEvent(event, '${eventId}')">
+            <div class="form-group">
+                <label>Başlık</label>
+                <input type="text" id="edit-ev-title" value="${esc(ev.title)}" required ${!isAdmin ? 'disabled' : ''}>
+            </div>
+            <div class="form-group">
+                <label>Tarih</label>
+                <input type="date" id="edit-ev-date" value="${ev.date}" required ${!isAdmin ? 'disabled' : ''}>
+            </div>
+            <div class="form-group">
+                <label>Açıklama</label>
+                <textarea id="edit-ev-desc" ${!isAdmin ? 'disabled' : ''}>${esc(ev.description || '')}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Durum</label>
+                <select id="edit-ev-status" ${!isAdmin ? 'disabled' : ''}>
+                    <option value="approved" ${ev.status === 'approved' ? 'selected' : ''}>Onaylandı</option>
+                    <option value="pending" ${ev.status === 'pending' ? 'selected' : ''}>Onay Bekliyor</option>
+                    <option value="rejected" ${ev.status === 'rejected' ? 'selected' : ''}>Reddedildi</option>
+                </select>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px">
+                Ekleyen: ${esc(ev.createdByName || 'Bilinmeyen')}
+            </div>
+            ${isAdmin ? `
+            <div style="display:flex;gap:10px">
+                <button type="submit" class="btn-primary" style="flex:1">Güncelle</button>
+                <button type="button" class="btn-danger" style="flex:0 0 auto" onclick="deleteEvent('${eventId}')">Sil</button>
+            </div>` : ''}
+        </form>
+    `);
+}
+
+async function updateEvent(e, eventId) {
+    e.preventDefault();
+    const title = document.getElementById('edit-ev-title').value.trim();
+    const date = document.getElementById('edit-ev-date').value;
+    const desc = document.getElementById('edit-ev-desc').value.trim();
+    const status = document.getElementById('edit-ev-status').value;
+    if (!title || !date) return;
+
+    try {
+        await db.collection('calendarEvents').doc(eventId).update({
+            title, date, description: desc, status
+        });
+        closeModal();
+        renderCalendar();
+    } catch (err) {
+        console.error(err);
+        alert('Etkinlik güncellenemedi.');
+    }
+}
+
+async function deleteEvent(eventId) {
+    if (!confirm('Bu etkinliği silmek istediğinize emin misiniz?')) return;
+    try {
+        await db.collection('calendarEvents').doc(eventId).delete();
+        closeModal();
+        renderCalendar();
+    } catch (err) {
+        console.error(err);
+        alert('Etkinlik silinemedi.');
+    }
+}
+
 // =================== TASKS ===================
 
 async function loadTasks() {
@@ -370,6 +444,7 @@ async function loadTasks() {
         }
 
         el.innerHTML = '';
+        const isAdmin = currentUserProfile.role === 'admin';
         tasks.forEach(t => {
             el.innerHTML += `
                 <div class="task-card">
@@ -384,11 +459,14 @@ async function loadTasks() {
                     </div>
                     <div class="task-actions">
                         <span class="badge badge-${t.status}">${statusText(t.status)}</span>
+                        ${isAdmin ? `
                         <select onchange="updateTaskStatus('${t.id}',this.value)">
                             <option value="pending" ${t.status === 'pending' ? 'selected' : ''}>Bekleyen</option>
                             <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>Devam Eden</option>
                             <option value="completed" ${t.status === 'completed' ? 'selected' : ''}>Tamamlandı</option>
                         </select>
+                        <button class="btn-danger btn-sm" onclick="deleteTask('${t.id}')">Sil</button>
+                        ` : ''}
                     </div>
                 </div>`;
         });
@@ -412,7 +490,19 @@ async function updateTaskStatus(id, status) {
     } catch (e) { alert('Güncelleme başarısız.'); }
 }
 
+async function deleteTask(id) {
+    if (!confirm('Bu görevi silmek istediğinize emin misiniz?')) return;
+    try {
+        await db.collection('tasks').doc(id).delete();
+        loadTasks();
+    } catch (e) { alert('Görev silinemedi.'); }
+}
+
 function openTaskModal() {
+    if (currentUserProfile.role !== 'admin') {
+        alert('Sadece yöneticiler görev oluşturabilir.');
+        return;
+    }
     const opts = allUsers
         .map(u => `<option value="${u.uid}">${esc(u.displayName || u.username)}</option>`)
         .join('');
@@ -442,6 +532,7 @@ function openTaskModal() {
 
 async function submitTask(e) {
     e.preventDefault();
+    if (currentUserProfile.role !== 'admin') return;
     const title = document.getElementById('task-title').value.trim();
     const desc = document.getElementById('task-desc').value.trim();
     const assignee = document.getElementById('task-assignee').value;
