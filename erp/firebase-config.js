@@ -12,8 +12,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-const ADMIN_USERNAME = 'AdminRigidLgc';
-const ADMIN_PASSWORD = 'AdminAdminAdmin123';
 const EMAIL_DOMAIN = '@rigidlgc.erp';
 
 function usernameToEmail(username) {

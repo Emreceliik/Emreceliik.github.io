@@ -296,38 +296,9 @@
         renderLangSelector();
         applyLoginLang();
 
-        let isSettingUpAdmin = false;
-
         auth.onAuthStateChanged(user => {
-            if (user && !isSettingUpAdmin) window.location.href = 'dashboard.html';
+            if (user) window.location.href = 'dashboard.html';
         });
-
-        async function ensureAdminExists() {
-            isSettingUpAdmin = true;
-            const adminEmail = usernameToEmail(ADMIN_USERNAME);
-            try {
-                let secondaryApp;
-                try { secondaryApp = firebase.app('AdminSetup'); }
-                catch (e) { secondaryApp = firebase.initializeApp(firebaseConfig, 'AdminSetup'); }
-                const setupAuth = secondaryApp.auth();
-                try {
-                    await setupAuth.signInWithEmailAndPassword(adminEmail, ADMIN_PASSWORD);
-                    await setupAuth.signOut();
-                } catch (e) {
-                    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
-                        const cred = await setupAuth.createUserWithEmailAndPassword(adminEmail, ADMIN_PASSWORD);
-                        await db.collection('users').doc(cred.user.uid).set({
-                            username: ADMIN_USERNAME, displayName: 'Admin', role: 'admin',
-                            email: adminEmail, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        await setupAuth.signOut();
-                    }
-                }
-            } catch (err) { console.error('Admin setup:', err); }
-            finally { isSettingUpAdmin = false; }
-        }
-
-        ensureAdminExists();
 
         function showError(msg) {
             const el = document.getElementById('error-message');

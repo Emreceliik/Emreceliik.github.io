@@ -472,7 +472,7 @@ async function saveUserEdit(e, uid) {
         await db.collection('users').doc(uid).update({ displayName: name, role });
         if (newPass && newPass.length >= 6) {
             const u = allUsers.find(x => x.uid === uid);
-            if (u) { let sa; try { sa = firebase.app('Secondary'); } catch(err) { sa = firebase.initializeApp(firebaseConfig,'Secondary'); } const sAuth = sa.auth(); await sAuth.signInWithEmailAndPassword(u.email, newPass).catch(async()=>{ await sAuth.signInWithEmailAndPassword(u.email, ADMIN_PASSWORD).catch(()=>{}); }); const sUser = sAuth.currentUser; if (sUser && sUser.uid === uid) await sUser.updatePassword(newPass); await sAuth.signOut(); }
+            if (u) { let sa; try { sa = firebase.app('Secondary'); } catch(err) { sa = firebase.initializeApp(firebaseConfig,'Secondary'); } const sAuth = sa.auth(); try { await sAuth.signInWithEmailAndPassword(u.email, newPass); } catch(e) {} const sUser = sAuth.currentUser; if (sUser && sUser.uid === uid) await sUser.updatePassword(newPass); await sAuth.signOut(); }
         }
         closeModal(); await loadAllUsers(); loadUsers();
         if (uid === currentUser.uid) { document.getElementById('user-display-name').textContent = name; currentUserProfile.displayName = name; currentUserProfile.role = role; }
