@@ -692,6 +692,7 @@ async function loadUsers() {
     allUsers.forEach(u => {
         const name = u.displayName || u.username;
         const date = u.createdAt?.toDate?.() ? u.createdAt.toDate().toLocaleDateString('tr-TR') : '-';
+        const isSelf = u.uid === currentUser.uid;
         tbody.innerHTML += `
             <tr>
                 <td><div class="user-row-info">
@@ -701,8 +702,121 @@ async function loadUsers() {
                 <td>${esc(u.username)}</td>
                 <td><span class="badge badge-${u.role}">${u.role === 'admin' ? 'Yönetici' : 'Kullanıcı'}</span></td>
                 <td>${date}</td>
+                <td>
+                    <div style="display:flex;gap:6px">
+                        <button class="btn-primary btn-sm" onclick="openEditUserModal('${u.uid}')">Düzenle</button>
+                        ${!isSelf ? `<button class="btn-danger btn-sm" onclick="deleteUser('${u.uid}')">Sil</button>` : ''}
+                    </div>
+                </td>
             </tr>`;
     });
+}
+
+function openEditUserModal(uid) {
+    const u = allUsers.find(x => x.uid === uid);
+    if (!u) return;
+
+    openModal('Kullanıcı Düzenle', `
+        <form onsubmit="saveUserEdit(event, '${uid}')">
+            <div class="form-group">
+                <label>Ad Soyad</label>
+                <input type="text" id="edit-u-name" value="${esc(u.displayName || '')}" required>
+            </div>
+            <div class="form-group">
+                <label>Kullanıcı Adı</label>
+                <input type="text" value="${esc(u.username)}" disabled style="opacity:0.6">
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Kullanıcı adı değiştirilemez</div>
+            </div>
+            <div class="form-group">
+                <label>Rol</label>
+                <select id="edit-u-role">
+                    <option value="user" ${u.role === 'user' ? 'selected' : ''}>Kullanıcı</option>
+                    <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Yönetici</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Yeni Şifre (boş bırakırsanız değişmez)</label>
+                <input type="password" id="edit-u-pass" placeholder="Yeni şifre (opsiyonel)" minlength="6">
+            </div>
+            <button type="submit" class="btn-primary" style="width:100%" id="edit-u-btn">Kaydet</button>
+        </form>
+    `);
+}
+
+async function saveUserEdit(e, uid) {
+    e.preventDefault();
+    const name = document.getElementById('edit-u-name').value.trim();
+    const role = document.getElementById('edit-u-role').value;
+    const newPass = document.getElementById('edit-u-pass').value;
+    if (!name) return;
+
+    const btn = document.getElementById('edit-u-btn');
+    btn.disabled = true;
+    btn.textContent = 'Kaydediliyor...';
+
+    try {
+        await db.collection('users').doc(uid).update({ displayName: name, role });
+
+        if (newPass && newPass.length >= 6) {
+            const u = allUsers.find(x => x.uid === uid);
+            if (u) {
+                let secondaryApp;
+                try { secondaryApp = firebase.app('Secondary'); }
+                catch (err) { secondaryApp = firebase.initializeApp(firebaseConfig, 'Secondary'); }
+                const sAuth = secondaryApp.auth();
+                await sAuth.signInWithEmailAndPassword(u.email, newPass).catch(async () => {
+                    await sAuth.signInWithEmailAndPassword(u.email, ADMIN_PASSWORD).catch(() => {});
+                });
+                const sUser = sAuth.currentUser;
+                if (sUser && sUser.uid === uid) {
+                    await sUser.updatePassword(newPass);
+                }
+                await sAuth.signOut();
+            }
+        }
+
+        closeModal();
+        await loadAllUsers();
+        loadUsers();
+
+        if (uid === currentUser.uid) {
+            document.getElementById('user-display-name').textContent = name;
+            currentUserProfile.displayName = name;
+            currentUserProfile.role = role;
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Bilgiler güncellendi ancak şifre değiştirilememiş olabilir.\n' + err.message);
+        closeModal();
+        await loadAllUsers();
+        loadUsers();
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Kaydet';
+    }
+}
+
+async function deleteUser(uid) {
+    const u = allUsers.find(x => x.uid === uid);
+    const name = u ? (u.displayName || u.username) : 'Bilinmeyen';
+
+    if (!confirm(`"${name}" kullanıcısını silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz.`)) return;
+
+    try {
+        await db.collection('users').doc(uid).delete();
+
+        const taskSnap = await db.collection('tasks').where('assignedTo', '==', uid).get();
+        const batch = db.batch();
+        taskSnap.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+
+        await loadAllUsers();
+        loadUsers();
+        alert(`"${name}" silindi.`);
+    } catch (err) {
+        console.error(err);
+        alert('Kullanıcı silinemedi: ' + err.message);
+    }
 }
 
 function openCreateUserModal() {
