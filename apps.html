@@ -15,6 +15,7 @@
       /* App card specific tweaks so logos look crisp and not cropped */
       .app-card .service-image { background: #fff; }
       .app-card .app-logo { width: 100%; height: 220px; object-fit: contain; border-radius: 8px; background: #fff; }
+      .app-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
       @media (min-width: 992px) { .app-card .app-logo { height: 260px; } }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -44,10 +45,21 @@
             <p>Immersive gaming experiences with cutting-edge graphics and innovative gameplay mechanics. Our games are crafted with attention to detail and player engagement.</p>
 
             <div class="services-grid">
-                <!-- Game development apps will be added here -->
-                <div class="service-card" style="border: 2px dashed #ddd; display: flex; align-items: center; justify-content: center; min-height: 300px;">
-                    <p style="color: #666; text-align: center; font-style: italic;">Our game development projects will be showcased here soon!</p>
-                </div>
+                <a href="https://play.google.com/store/apps/details?id=com.rigidlgc.zigzag" target="_blank" rel="noopener" class="service-card app-card" style="text-decoration:none;color:inherit;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s">
+                    <div class="service-image">
+                        <img class="app-logo" src="https://play-lh.googleusercontent.com/I0I5-XSQ7UaMdSC-qqjN1lK0MLkRRBW-Hunfft4IDGL_aKWdV4UXoFVNTAtOK95siP5OGvRhLISZIvpZ3Jkp=s256-rw" alt="ZigZag Superheroes">
+                    </div>
+                    <h3>ZigZag Superheroes</h3>
+                    <p>Swing through the city, rescue injured people, and master the art of rope swinging in this thrilling action-adventure game!</p>
+                </a>
+
+                <a href="https://play.google.com/store/apps/details?id=com.rigidlogic.bucketout" target="_blank" rel="noopener" class="service-card app-card" style="text-decoration:none;color:inherit;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s">
+                    <div class="service-image">
+                        <img class="app-logo" src="https://play-lh.googleusercontent.com/zs9JMc6RuR10xhzsLKBP9lDqxVfUPL9Far7rSA3Zv3S-8KkZFnqiQY8rxOavHf-M-A=s256-rw" alt="Bucket Out: Find Objects">
+                    </div>
+                    <h3>Bucket Out: Find Objects</h3>
+                    <p>A fun and addictive game where you control a bucket to catch falling objects. Test your reflexes and compete for the highest score!</p>
+                </a>
             </div>
         </div>
     </section>
