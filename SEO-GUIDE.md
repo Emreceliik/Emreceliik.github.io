@@ -35,9 +35,9 @@ Bu rehber, Rigid Logic websitesinin Google'da üst sıralarda çıkması için y
 ```bash
 1. https://search.google.com/search-console/ adresine git
 2. "Add Property" → "URL prefix" seç
-3. https://emreceliik.github.io/ URL'ini ekle
+3. https://rigidlgc.com/ URL'ini ekle
 4. Verification HTML dosyasını indir ve root klasöre yükle
-5. Sitemap'i submit et: https://emreceliik.github.io/sitemap.xml
+5. Sitemap'i submit et: https://rigidlgc.com/sitemap.xml
 ```
 
 ### 2. Google Analytics Entegrasyonu
